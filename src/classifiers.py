@@ -17,7 +17,7 @@ from optuna.distributions import (
 
 
 from datetime import datetime
-def get_current_time():
+def time():
     y = datetime.now().year
     m = datetime.now().month
     d = datetime.now().day
@@ -75,7 +75,7 @@ class Classifier:
         ]
 
         self.simple_log = ""
-        self.simple_log += f"\n[{get_current_time()}] Classifier called\n\n"
+        self.simple_log += f"\n[{time()}] Classifier class created\n\n"
         self.simple_log += "-"* 50 + "\n"
         self.simple_log += f"| Model type: {self.model_type:>34} |\n"
         self.simple_log += f"| Dataset shape: {str(self.X.shape):>31} |\n"
@@ -88,9 +88,9 @@ class Classifier:
 
         if fill_nans:
             self.X = fill_nans_with_median(self.X, self.y, class_based=True)
-            self.simple_log += f"[{get_current_time()}] NaN values filled with median."
+            self.simple_log += f"[{time()}] NaN values filled with median."
         else:
-            self.simple_log += f"[{get_current_time()}] NaN values not filled."
+            self.simple_log += f"[{time()}] NaN values not filled."
 
 
 if __name__ == "__main__":
