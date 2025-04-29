@@ -88,9 +88,9 @@ class Classifier:
 
         if fill_nans:
             self.X = fill_nans_with_median(self.X, self.y, class_based=True)
-            self.simple_log += f"[{time()}] NaN values filled with median."
+            self.simple_log += f"[{time()}] NaN values filled with median.\n"
         else:
-            self.simple_log += f"[{time()}] NaN values not filled."
+            self.simple_log += f"[{time()}] NaN values not filled.\n"
 
 
 if __name__ == "__main__":
