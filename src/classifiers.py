@@ -18,19 +18,25 @@ from optuna.distributions import (
 
 from datetime import datetime
 def get_current_time():
-    return f"{datetime.now().year}/{datetime.now().month}/{datetime.now().day}-{datetime.now().hour}:{datetime.now().minute}:{datetime.now().second}"
-
+    y = datetime.now().year
+    m = datetime.now().month
+    d = datetime.now().day
+    h = datetime.now().hour
+    mi = datetime.now().minute
+    s = datetime.now().second
+    return f"{y}/{m}/{d}-{h}:{mi}:{s}"
 
 
 class Classifier:
 
+    # I like having them here, I know it's not needed or anything
     VALID_MODELS = [
-        "LR",
-        "GNB",
-        "LDA",
-        "SVM",
-        "RF",
-        "lGBM"
+        "LR",   # LogisticRegression
+        "GNB",  # GaussianNB
+        "LDA",  # LinearDiscriminantAnalysis
+        "SVM",  # SupportVectorMachine
+        "RF",   # RandomForest
+        "lGBM"  # LightGBM
     ]
 
     def __init__(
