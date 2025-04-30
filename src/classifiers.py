@@ -194,18 +194,17 @@ class NestedCV:
     def __init__(
             self,
             classifier: Classifier,
-            random_states: list,
             rounds: int = 10,
             outer_folds: int = 5,
             inner_folds: int = 3,
-            optuna_trials: int = 100
+            optuna_trials: int = 10
         ):
         self.classifier = classifier
-        self.random_states = random_states
         self.rounds = rounds
         self.outer_folds = outer_folds
         self.inner_folds = inner_folds
         self.optuna_trials = optuna_trials
+        self.random_states = self.classifier.random_states
 
         self.results = []
 
@@ -444,8 +443,9 @@ class NestedCV:
 
 
 def pipeline(
-        
-):
+        data_dir: str,
+        models_dir: str
+    ):
     """Complete pipeline helper function to automate everything in the assignment.
 
     Parameters
@@ -454,4 +454,14 @@ def pipeline(
     Returns
     -------
     """
-    pass
+    for model in VALID_MODELS.keys():
+        ncv = NestedCV(model)
+        results = ncv.run()
+        print(results)
+
+
+if __name__ == "__main__":
+    pipeline(
+        data_dir=".data/breast_cancer.csv",
+        models_dir=".models"
+    )
