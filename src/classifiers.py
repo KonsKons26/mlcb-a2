@@ -8,6 +8,12 @@ from src.preprocessing import fill_nans_with_median
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split, StratifiedKFold
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from lightgbm import LGBMClassifier
 
 import optuna
 from optuna.samplers import TPESampler
@@ -15,8 +21,9 @@ from optuna.distributions import (
     IntDistribution, FloatDistribution, CategoricalDistribution
 )
 
-
 from datetime import datetime
+
+
 def time():
     y = datetime.now().year
     m = datetime.now().month
@@ -36,7 +43,7 @@ class Classifier:
         "LDA",  # LinearDiscriminantAnalysis
         "SVM",  # SupportVectorMachine
         "RF",   # RandomForest
-        "lGBM"  # LightGBM
+        "LGBM"  # LightGBM
     ]
 
     def __init__(
@@ -91,6 +98,54 @@ class Classifier:
             self.simple_log += f"[{time()}] NaN values filled with median.\n"
         else:
             self.simple_log += f"[{time()}] NaN values not filled.\n"
+
+        self.hyperparameter_space = self._get_hyperparameter_space()
+        self.simple_log += f"[{time()}] Hyperparameter space created.\n"
+
+    def _get_hyperparameter_space(self):
+        """Returns the hyperparameter space for the model type."""
+        if self.model_type == "LR":
+            return {
+                "penalty": CategoricalDistribution(["elasticnet"]),
+                "C": FloatDistribution(1e-5, 1e5, log=True),
+                "fit_intercept": CategoricalDistribution([True, False]),
+                "solver": CategoricalDistribution(["lbfgs", "liblinear", "sag", "saga"]),
+                "random_state": self.random_state,
+            }
+        elif self.model_type == "GNB":
+            return {}
+        elif self.model_type == "LDA":
+            return {
+                "solver": CategoricalDistribution(["svd", "lsqr", "eigen"]),
+                "shrinkage": CategoricalDistribution([None, 'auto'])
+            }
+        elif self.model_type == "SVM":
+            return {
+                "C": FloatDistribution(1e-5, 1e5, log=True),
+                "kernel": CategoricalDistribution(["linear", "poly", "rbf", "sigmoid"]),
+                "degree": IntDistribution(2, 7),
+                "gamma": CategoricalDistribution(["scale", "auto"]),
+                "random_state": self.random_state,
+            }
+        elif self.model_type == "RF":
+            return {
+                "n_estimators": IntDistribution(10, 1000),
+                "criterion": CategoricalDistribution(["gini", "entropy", "log_loss"]),
+                "max_depth": IntDistribution(10, 50),
+                "min_samples_split": IntDistribution(2, 20),
+                "min_samples_leaf": IntDistribution(1, 20),
+                "max_features": CategoricalDistribution(["sqrt", "log2"]),
+                "random_state": self.random_state
+            }
+        elif self.model_type == "LGBM":
+            return {
+                "boosting_type": CategoricalDistribution(["gbdt", "dart"]),
+                "num_leaves": IntDistribution(20, 150),
+                "learning_rate": FloatDistribution(1e-3, 0.5),
+                "n_estimators": IntDistribution(50, 500)
+            }
+        else:
+            raise ValueError(f"Invalid model type: {self.model_type}")
 
 
 if __name__ == "__main__":
