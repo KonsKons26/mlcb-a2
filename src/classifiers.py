@@ -443,7 +443,7 @@ class NestedCV:
 
 
 def pipeline(
-        data_dir: str,
+        dataset: pd.DataFrame,
         models_dir: str
     ):
     """Complete pipeline helper function to automate everything in the assignment.
@@ -455,13 +455,16 @@ def pipeline(
     -------
     """
     for model in VALID_MODELS.keys():
-        ncv = NestedCV(model)
+        clf = Classifier(model, dataset, "diagnosis", models_dir=models_dir)
+        ncv = NestedCV(clf)
         results = ncv.run()
+        print(model)
         print(results)
 
 
 if __name__ == "__main__":
-    pipeline(
-        data_dir=".data/breast_cancer.csv",
-        models_dir=".models"
-    )
+    base_dir = os.getcwd()
+    data_dir = os.path.join(base_dir, "data")
+    models_dir = os.path.join(base_dir, "models")
+    df = pd.read_csv(os.path.join(data_dir, "breast_cancer.csv"))
+    pipeline(dataset=df, models_dir=models_dir)
