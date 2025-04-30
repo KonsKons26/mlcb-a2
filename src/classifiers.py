@@ -148,6 +148,89 @@ class Classifier:
             raise ValueError(f"Invalid model type: {self.model_type}")
 
 
+class NestedCV:
+    def __init__(
+            self,
+            classifier: Classifier,
+            random_states: list,
+            rounds: int = 10,
+            outer_folds: int = 5,
+            inner_folds: int = 3,
+        ):
+        self.classifier = classifier
+        self.random_states = random_states
+        self.rounds = rounds
+        self.outer_folds = outer_folds
+        self.inner_folds = inner_folds
+
+        self.results = []
+
+        self.simple_log = ""
+        self.simple_log += f"[{time()}] NestedCV class created.\n"
+
+
+    def run(self):
+        """Runs the nested cross-validation."""
+        self.simple_log += f"[{time()}] Running nested cross-validation.\n"
+        self.simple_log += "-"* 50 + "\n"
+
+        for round, seed in zip(range(len(self.rounds)), self.random_states):
+            self.simple_log += f"[{time()}] Round {round + 1} with seed {seed}.\n"
+
+            # Outer loops - Stratified KFold Cross Validation
+            outer_cv = StratifiedKFold(
+                n_splits=self.outer_folds,
+                shuffle=True,
+                random_state=seed
+            )
+
+            for outer_fold, (outer_train_index, outer_test_index) in enumerate(
+                outer_cv.split(
+                    self.classifier.X,
+                    self.classifier.y
+                )
+            ):
+                
+                # # Inner loops - Hyperparameter tuning with Optuna
+                # inner_cv = StratifiedKFold(
+                #     n_splits=self.inner_folds,
+                #     shuffle=True,
+                #     random_state=seed
+                # )
+                # for inner_fold, (inner_train_index, inner_val_index) in enumerate(
+                #     inner_cv.split(
+                #         self.classifier.X.iloc[outer_train_index],
+                #         self.classifier.y.iloc[outer_train_index]
+                #     )
+                # ):
+                #     # Split the data
+                #     X_train = self.classifier.X.iloc[inner_train_index]
+                #     y_train = self.classifier.y.iloc[inner_train_index]
+                #     X_val = self.classifier.X.iloc[inner_val_index]
+                #     y_val = self.classifier.y.iloc[inner_val_index]
+
+                #     # Create the model
+                #     model = self._create_model()
+
+                #     # Train the model
+                #     model.fit(X_train, y_train)
+
+                #     # Evaluate the model
+                #     score = model.score(X_val, y_val)
+                #     self.simple_log += f"[{time()}] Inner fold {inner_fold + 1} score: {score:.4f}\n"
+
+
+                pass
+
+class LogisticRegressionClassifier(Classifier):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.model = LogisticRegression()
+
+
+
+
 if __name__ == "__main__":
     test = Classifier(
         model_type="LR",
