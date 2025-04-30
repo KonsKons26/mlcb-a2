@@ -39,17 +39,16 @@ def time():
     now = datetime.now()
     return f"{now:%Y/%m/%d-%H:%M:%S}"
 
+VALID_MODELS = {
+    "LogisticRegression":   LogisticRegression(),
+    "GaussianNB":  GaussianNB(),
+    "LinearDiscriminantAnalysis":  LinearDiscriminantAnalysis(),
+    "SVC":  SVC(),
+    "RandomForestClassifier":   RandomForestClassifier(),
+    "LGBMClassifier": LGBMClassifier()
+}
 
 class Classifier:
-
-    VALID_MODELS = {
-        "LogisticRegression":   LogisticRegression(),
-        "GaussianNB":  GaussianNB(),
-        "LinearDiscriminantAnalysis":  LinearDiscriminantAnalysis(),
-        "SVC":  SVC(),
-        "RandomForestClassifier":   RandomForestClassifier(),
-        "LGBMClassifier": LGBMClassifier()
-    }
 
     def __init__(
             self,
@@ -66,14 +65,14 @@ class Classifier:
         self.simple_log = ""
 
         # Checks
-        if model_type not in self.VALID_MODELS:
+        if model_type not in VALID_MODELS:
             raise ValueError(f"Invalid model type: {model_type}. "
-                             f"Valid options are: {self.VALID_MODELS}")
+                             f"Valid options are: {VALID_MODELS}")
         if not os.path.exists(models_dir):
             os.makedirs(models_dir)
             self.simple_log += f"Directory {models_dir} created."
 
-        self.model = self.VALID_MODELS[model_type]
+        self.model = VALID_MODELS[model_type]
         self.model_type = self.model.__class__.__name__
         self.X = dataset.drop(columns=[target])
         self.y = dataset[target]
@@ -187,8 +186,8 @@ class Classifier:
     def create_model(self, params=None):
         """Create a model with given parameters (from Optuna)"""
         if params is None or self.model_type == "GaussianNB":
-            return self.VALID_MODELS[self.model_type]
-        return self.VALID_MODELS[self.model_type].__class__(**params)
+            return VALID_MODELS[self.model_type]
+        return VALID_MODELS[self.model_type].__class__(**params)
 
 
 class NestedCV:
@@ -275,7 +274,6 @@ class NestedCV:
                 best_params = study.best_params
                 best_model = self.classifier.create_model(best_params)
                 best_model.fit(X_train, y_train)
-                score = best_model.score(X_test, y_test)
 
                 y_pred = best_model.predict(X_test)
 
@@ -302,147 +300,147 @@ class NestedCV:
         return self.results
 
 
-def _objective(self, trial, X, y, cv_round):
-    """Objective function for Optuna that handles conditional hyperparameters."""
-    params = {}
-    
-    # Create appropriate hyperparameter suggestions based on model type
-    if self.classifier.model_type == "LogisticRegression":
-        penalty = trial.suggest_categorical("penalty", ["l1", "l2", "elasticnet", "none"])
-        params["penalty"] = penalty
+    def _objective(self, trial, X, y, cv_round):
+        """Objective function for Optuna that handles conditional hyperparameters."""
+        params = {}
         
-        # Conditional solver based on penalty
-        if penalty == "elasticnet":
-            params["solver"] = "saga"  # Only saga supports elasticnet
-            params["l1_ratio"] = trial.suggest_float("l1_ratio", 0, 1)
-        elif penalty == "l1":
-            params["solver"] = trial.suggest_categorical("solver", ["liblinear", "saga"])
-        elif penalty == "l2":
-            params["solver"] = trial.suggest_categorical("solver", ["lbfgs", "liblinear", "sag", "saga"])
-        else:  # "none"
-            params["solver"] = trial.suggest_categorical("solver", ["lbfgs", "sag", "saga"])
+        # Create appropriate hyperparameter suggestions based on model type
+        if self.classifier.model_type == "LogisticRegression":
+            penalty = trial.suggest_categorical("penalty", ["l1", "l2", "elasticnet", "none"])
+            params["penalty"] = penalty
             
-        params["C"] = trial.suggest_float("C", 1e-5, 1e5, log=True)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", [True, False])
-        params["max_iter"] = trial.suggest_int("max_iter", 100, 1000)
-        params["random_state"] = self.classifier.random_states[cv_round]
-    
-    elif self.classifier.model_type == "GaussianNB":
-        # GaussianNB has no hyperparameters to tune
-        pass
-    
-    elif self.classifier.model_type == "LinearDiscriminantAnalysis":
-        solver = trial.suggest_categorical("solver", ["svd", "lsqr", "eigen"])
-        params["solver"] = solver
+            # Conditional solver based on penalty
+            if penalty == "elasticnet":
+                params["solver"] = "saga"  # Only saga supports elasticnet
+                params["l1_ratio"] = trial.suggest_float("l1_ratio", 0, 1)
+            elif penalty == "l1":
+                params["solver"] = trial.suggest_categorical("solver", ["liblinear", "saga"])
+            elif penalty == "l2":
+                params["solver"] = trial.suggest_categorical("solver", ["lbfgs", "liblinear", "sag", "saga"])
+            else:  # "none"
+                params["solver"] = trial.suggest_categorical("solver", ["lbfgs", "sag", "saga"])
+                
+            params["C"] = trial.suggest_float("C", 1e-5, 1e5, log=True)
+            params["fit_intercept"] = trial.suggest_categorical("fit_intercept", [True, False])
+            params["max_iter"] = trial.suggest_int("max_iter", 100, 1000)
+            params["random_state"] = self.classifier.random_states[cv_round]
         
-        # shrinkage is only relevant for 'lsqr' and 'eigen' solvers
-        if solver in ["lsqr", "eigen"]:
-            shrinkage_type = trial.suggest_categorical("shrinkage_type", ["auto", "manual", "none"])
-            if shrinkage_type == "auto":
-                params["shrinkage"] = "auto"
-            elif shrinkage_type == "manual":
-                params["shrinkage"] = trial.suggest_float("shrinkage_value", 0, 1)
-            # If 'none', don't set shrinkage
+        elif self.classifier.model_type == "GaussianNB":
+            # GaussianNB has no hyperparameters to tune
+            pass
         
-        # n_components is meaningful only when n_classes > 1
-        # In binary classification, max is 1
-        # Assuming we might have multi-class, we'll add this
-        if len(np.unique(y)) > 2:  # More than binary classification
-            n_components_max = min(len(np.unique(y)) - 1, X.shape[1])
-            if n_components_max > 1:  # Only suggest if we have room for multiple components
-                params["n_components"] = trial.suggest_int("n_components", 1, n_components_max)
-    
-    elif self.classifier.model_type == "SVC":
-        kernel = trial.suggest_categorical("kernel", ["linear", "poly", "rbf", "sigmoid"])
-        params["kernel"] = kernel
+        elif self.classifier.model_type == "LinearDiscriminantAnalysis":
+            solver = trial.suggest_categorical("solver", ["svd", "lsqr", "eigen"])
+            params["solver"] = solver
+            
+            # shrinkage is only relevant for 'lsqr' and 'eigen' solvers
+            if solver in ["lsqr", "eigen"]:
+                shrinkage_type = trial.suggest_categorical("shrinkage_type", ["auto", "manual", "none"])
+                if shrinkage_type == "auto":
+                    params["shrinkage"] = "auto"
+                elif shrinkage_type == "manual":
+                    params["shrinkage"] = trial.suggest_float("shrinkage_value", 0, 1)
+                # If 'none', don't set shrinkage
+            
+            # n_components is meaningful only when n_classes > 1
+            # In binary classification, max is 1
+            # Assuming we might have multi-class, we'll add this
+            if len(np.unique(y)) > 2:  # More than binary classification
+                n_components_max = min(len(np.unique(y)) - 1, X.shape[1])
+                if n_components_max > 1:  # Only suggest if we have room for multiple components
+                    params["n_components"] = trial.suggest_int("n_components", 1, n_components_max)
         
-        # Only suggest degree for poly kernel
-        if kernel == "poly":
-            params["degree"] = trial.suggest_int("degree", 2, 7)
+        elif self.classifier.model_type == "SVC":
+            kernel = trial.suggest_categorical("kernel", ["linear", "poly", "rbf", "sigmoid"])
+            params["kernel"] = kernel
+            
+            # Only suggest degree for poly kernel
+            if kernel == "poly":
+                params["degree"] = trial.suggest_int("degree", 2, 7)
+            
+            # Gamma is only relevant for 'poly', 'rbf', and 'sigmoid'
+            if kernel in ["poly", "rbf", "sigmoid"]:
+                params["gamma"] = trial.suggest_categorical("gamma", ["scale", "auto"])
+            
+            params["C"] = trial.suggest_float("C", 1e-5, 1e5, log=True)
+            params["probability"] = True  # Enable probability estimates
+            params["random_state"] = self.classifier.random_states[cv_round]
         
-        # Gamma is only relevant for 'poly', 'rbf', and 'sigmoid'
-        if kernel in ["poly", "rbf", "sigmoid"]:
-            params["gamma"] = trial.suggest_categorical("gamma", ["scale", "auto"])
+        elif self.classifier.model_type == "RandomForestClassifier":
+            params["n_estimators"] = trial.suggest_int("n_estimators", 10, 1000)
+            params["criterion"] = trial.suggest_categorical("criterion", ["gini", "entropy", "log_loss"])
+            
+            # Control tree depth
+            max_depth_enabled = trial.suggest_categorical("max_depth_enabled", [True, False])
+            if max_depth_enabled:
+                params["max_depth"] = trial.suggest_int("max_depth", 10, 50)
+            else:
+                params["max_depth"] = None
+                
+            params["min_samples_split"] = trial.suggest_int("min_samples_split", 2, 20)
+            params["min_samples_leaf"] = trial.suggest_int("min_samples_leaf", 1, 20)
+            
+            # Feature selection strategy
+            params["max_features"] = trial.suggest_categorical("max_features", ["sqrt", "log2", None])
+            
+            # Bootstrap options
+            params["bootstrap"] = trial.suggest_categorical("bootstrap", [True, False])
+            
+            # Class weight options
+            class_weight_option = trial.suggest_categorical("class_weight_option", ["balanced", "balanced_subsample", None])
+            if class_weight_option is not None:
+                params["class_weight"] = class_weight_option
+                
+            params["random_state"] = self.classifier.random_states[cv_round]
         
-        params["C"] = trial.suggest_float("C", 1e-5, 1e5, log=True)
-        params["probability"] = True  # Enable probability estimates
-        params["random_state"] = self.classifier.random_states[cv_round]
-    
-    elif self.classifier.model_type == "RandomForestClassifier":
-        params["n_estimators"] = trial.suggest_int("n_estimators", 10, 1000)
-        params["criterion"] = trial.suggest_categorical("criterion", ["gini", "entropy", "log_loss"])
+        elif self.classifier.model_type == "LGBMClassifier":
+            params["boosting_type"] = trial.suggest_categorical("boosting_type", ["gbdt", "dart", "goss"])
+            
+            # Handle incompatible boosting types
+            if params["boosting_type"] == "goss":
+                params["subsample"] = 1.0  # Cannot use bagging with GOSS
+            else:
+                params["subsample"] = trial.suggest_float("subsample", 0.5, 1.0)
+                
+            # Common parameters
+            params["num_leaves"] = trial.suggest_int("num_leaves", 20, 150)
+            params["learning_rate"] = trial.suggest_float("learning_rate", 1e-3, 0.5, log=True)
+            params["n_estimators"] = trial.suggest_int("n_estimators", 50, 500)
+            params["min_child_samples"] = trial.suggest_int("min_child_samples", 5, 100)
+            
+            # Regularization
+            params["reg_alpha"] = trial.suggest_float("reg_alpha", 1e-8, 10.0, log=True)
+            params["reg_lambda"] = trial.suggest_float("reg_lambda", 1e-8, 10.0, log=True)
+            
+            # Feature fraction for better generalization
+            params["colsample_bytree"] = trial.suggest_float("colsample_bytree", 0.5, 1.0)
+            
+            # Class weight
+            params["class_weight"] = trial.suggest_categorical("class_weight", ["balanced", None])
+            
+            params["random_state"] = self.classifier.random_states[cv_round]
         
-        # Control tree depth
-        max_depth_enabled = trial.suggest_categorical("max_depth_enabled", [True, False])
-        if max_depth_enabled:
-            params["max_depth"] = trial.suggest_int("max_depth", 10, 50)
         else:
-            params["max_depth"] = None
-            
-        params["min_samples_split"] = trial.suggest_int("min_samples_split", 2, 20)
-        params["min_samples_leaf"] = trial.suggest_int("min_samples_leaf", 1, 20)
+            raise ValueError(f"Invalid model type: {self.classifier.model_type}")
         
-        # Feature selection strategy
-        params["max_features"] = trial.suggest_categorical("max_features", ["sqrt", "log2", None])
+        # Create and evaluate the model
+        model = self.classifier.create_model(params)
         
-        # Bootstrap options
-        params["bootstrap"] = trial.suggest_categorical("bootstrap", [True, False])
+        inner_cv = StratifiedKFold(
+            n_splits=self.inner_folds, 
+            shuffle=True, 
+            random_state=self.classifier.random_states[cv_round]
+        )
         
-        # Class weight options
-        class_weight_option = trial.suggest_categorical("class_weight_option", ["balanced", "balanced_subsample", None])
-        if class_weight_option is not None:
-            params["class_weight"] = class_weight_option
-            
-        params["random_state"] = self.classifier.random_states[cv_round]
-    
-    elif self.classifier.model_type == "LGBMClassifier":
-        params["boosting_type"] = trial.suggest_categorical("boosting_type", ["gbdt", "dart", "goss"])
+        # Use F1 score as the optimization metric
+        score = cross_val_score(
+            model, X, y, 
+            cv=inner_cv, 
+            scoring="f1", 
+            n_jobs=-1  # Use all available cores
+        ).mean()
         
-        # Handle incompatible boosting types
-        if params["boosting_type"] == "goss":
-            params["subsample"] = 1.0  # Cannot use bagging with GOSS
-        else:
-            params["subsample"] = trial.suggest_float("subsample", 0.5, 1.0)
-            
-        # Common parameters
-        params["num_leaves"] = trial.suggest_int("num_leaves", 20, 150)
-        params["learning_rate"] = trial.suggest_float("learning_rate", 1e-3, 0.5, log=True)
-        params["n_estimators"] = trial.suggest_int("n_estimators", 50, 500)
-        params["min_child_samples"] = trial.suggest_int("min_child_samples", 5, 100)
-        
-        # Regularization
-        params["reg_alpha"] = trial.suggest_float("reg_alpha", 1e-8, 10.0, log=True)
-        params["reg_lambda"] = trial.suggest_float("reg_lambda", 1e-8, 10.0, log=True)
-        
-        # Feature fraction for better generalization
-        params["colsample_bytree"] = trial.suggest_float("colsample_bytree", 0.5, 1.0)
-        
-        # Class weight
-        params["class_weight"] = trial.suggest_categorical("class_weight", ["balanced", None])
-        
-        params["random_state"] = self.classifier.random_states[cv_round]
-    
-    else:
-        raise ValueError(f"Invalid model type: {self.classifier.model_type}")
-    
-    # Create and evaluate the model
-    model = self.classifier.create_model(params)
-    
-    inner_cv = StratifiedKFold(
-        n_splits=self.inner_folds, 
-        shuffle=True, 
-        random_state=self.classifier.random_states[cv_round]
-    )
-    
-    # Use F1 score as the optimization metric
-    score = cross_val_score(
-        model, X, y, 
-        cv=inner_cv, 
-        scoring="f1", 
-        n_jobs=-1  # Use all available cores
-    ).mean()
-    
-    return score
+        return score
 
 
 def pipeline(
