@@ -130,8 +130,8 @@ class NestedCrossValidation:
                 "class_weight": trial.suggest_categorical("class_weight", ["balanced", None])
             },
             "RandomForestClassifier": lambda trial: {
-                "n_estimators": trial.suggest_int("n_estimators", 10, 1_000),
-                "criterion": trial.suggest_categorical("criterion", ["gini", "entropy", "log_loss"]),
+                "n_estimators": trial.suggest_int("n_estimators", 10, 100),
+                "criterion": trial.suggest_categorical("criterion", ["gini", "entropy"]),
                 "max_depth": None,
                 "min_samples_split": trial.suggest_int("min_samples_split", 2, 20)
             },
@@ -223,7 +223,8 @@ class NestedCrossValidation:
                     current_selected_features = mrmr_classif(
                         X=X_inner_train,
                         y=y_inner_train,
-                        K=self.n_features_to_select
+                        K=self.n_features_to_select,
+                        show_progress=False
                     )
                     X_inner_train = X_inner_train[current_selected_features]
                     X_inner_val = X_inner_val[current_selected_features]
