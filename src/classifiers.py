@@ -238,7 +238,6 @@ class NestedCrossValidation:
                             y_inner_val
                         ),
                         n_trials=self.n_optuna_trials,
-                        show_progress_bar=True,
                         n_jobs=-1
                     )
 
@@ -345,7 +344,7 @@ def pipeline(df, target, validation_set_fraction, seed):
         # "SVC",
         # TODO: continue from here
         "RandomForestClassifier",
-        "LGBMClassifier"
+        # "LGBMClassifier"
     ]
     for clf in classifiers:
         print(f"Running Nested Cross Validation for {clf}...")

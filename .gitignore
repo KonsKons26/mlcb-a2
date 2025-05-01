@@ -1,4 +1,4 @@
 latex_files
 src/__pycache__
 .venv
-src/gem.py
+src/gem*
