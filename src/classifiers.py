@@ -30,7 +30,10 @@ import joblib
 from datetime import datetime
 
 import logging
+import warnings
 optuna.logging.set_verbosity(optuna.logging.WARNING)
+warnings.filterwarnings("ignore", category=UserWarning, module='lightgbm')
+warnings.filterwarnings("ignore", category=UserWarning)
 
 VALID_MODELS = {
     "LogisticRegression": LogisticRegression(),
@@ -145,7 +148,11 @@ class NestedCrossValidation:
                 "min_child_samples": trial.suggest_int("min_child_samples", 1, 100),
                 "reg_alpha": trial.suggest_float("reg_alpha", 0.0, 1.0),
                 "reg_lambda": trial.suggest_float("reg_lambda", 0.0, 1.0),
-                "verbose": -1
+                "verbose": -1,
+                # For rf 
+                "bagging_freq": trial.suggest_int("bagging_freq", 1, 10),
+                "bagging_fraction": trial.suggest_float("bagging_fraction", 0.1, 0.99),
+                "feature_fraction": trial.suggest_float("feature_fraction", 0.1, 0.99)
             }
         }
 
@@ -355,8 +362,8 @@ def pipeline(df, target, validation_set_fraction, seed):
         # "LinearDiscriminantAnalysis",
         # "SVC",
         # TODO: continue from here
-        "RandomForestClassifier",
-        # "LGBMClassifier"
+        # "RandomForestClassifier",
+        "LGBMClassifier"
     ]
     for clf in classifiers:
         print(f"Running Nested Cross Validation for {clf}...")
