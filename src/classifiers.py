@@ -8,7 +8,10 @@ from src.preprocessing import fill_nans_with_median
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import matthews_corrcoef, accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import (
+    matthews_corrcoef, accuracy_score, precision_score, recall_score,
+    f1_score, roc_auc_score, confusion_matrix
+)
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -43,6 +46,12 @@ def time():
     """Returns the current time in a formatted string."""
     now = datetime.now()
     return f"{now:%Y/%m/%d-%H:%M:%S}"
+
+
+def specificity_score(y_true, y_pred):
+    """Calculate specificity score."""
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    return tn / (tn + fp)
 
 
 class NestedCrossValidation:
@@ -124,24 +133,18 @@ class NestedCrossValidation:
                 "n_estimators": trial.suggest_int("n_estimators", 10, 1_000),
                 "criterion": trial.suggest_categorical("criterion", ["gini", "entropy", "log_loss"]),
                 "max_depth": None,
-                "min_samples_split": trial.suggest_int("min_samples_split", 2, 20),
-                "max_features": trial.suggest_categorical("max_features", ["sqrt", "log2", None]),
-                "class_weight": trial.suggest_categorical("class_weight", ["balanced", "balanced_subsample", None])
+                "min_samples_split": trial.suggest_int("min_samples_split", 2, 20)
             },
             "LGBMClassifier": lambda trial: {
-                "objective": "binary",
-                "metric": "binary_logloss",
-                "boosting_type": trial.suggest_categorical("boosting_type", ["gbdt", "dart"]),
-                "n_estimators": trial.suggest_int("n_estimators", 10, 1_000),
-                "learning_rate": trial.suggest_float("learning_rate", 1e-5, 1.0, log=True),
+                "boosting_type": trial.suggest_categorical("boosting_type", ["gbdt", "dart", "rf"]),
                 "num_leaves": trial.suggest_int("num_leaves", 10, 100),
                 "max_depth": trial.suggest_int("max_depth", 1, 100),
+                "learning_rate": trial.suggest_float("learning_rate", 1e-5, 1.0, log=True),
+                "n_estimators": trial.suggest_int("n_estimators", 10, 1_000),
+                "objective": "binary",
                 "min_child_samples": trial.suggest_int("min_child_samples", 1, 100),
-                "subsample": trial.suggest_float("subsample", 0.1, 1.0),
-                "colsample_bytree": trial.suggest_float("colsample_bytree", 0.1, 1.0),
                 "reg_alpha": trial.suggest_float("reg_alpha", 0.0, 1.0),
                 "reg_lambda": trial.suggest_float("reg_lambda", 0.0, 1.0),
-                "class_weight": trial.suggest_categorical("class_weight", ["balanced", None]),
                 "verbose": -1
             }
         }
@@ -156,8 +159,9 @@ class NestedCrossValidation:
             if hyperparams["solver"] == "svd":
                 hyperparams["shrinkage"] = None
 
+        model_class = VALID_MODELS[self.classifier_type].__class__
+        model = model_class(**hyperparams)
         # Create the model with the selected hyperparameters
-        model = self.classifier.set_params(**hyperparams)
         model.fit(X_train, y_train)
         y_val_pred = model.predict(X_val)
 
@@ -238,6 +242,7 @@ class NestedCrossValidation:
                             y_inner_val
                         ),
                         n_trials=self.n_optuna_trials,
+                        show_progress_bar=False,
                         n_jobs=-1
                     )
 
@@ -288,8 +293,11 @@ class NestedCrossValidation:
                 accuracy = accuracy_score(y_outer_test, y_outer_pred)
                 precision = precision_score(y_outer_test, y_outer_pred)
                 recall = recall_score(y_outer_test, y_outer_pred)
-                f1 = f1_score(y_outer_test, y_outer_pred)
+                specificity = specificity_score(y_outer_test, y_outer_pred)
                 mcc = matthews_corrcoef(y_outer_test, y_outer_pred)
+                f1 = f1_score(y_outer_test, y_outer_pred)
+                roc_auc = roc_auc_score(y_outer_test, y_outer_pred)
+
                 self.results.append({
                     "round": round_ ,
                     "outer_fold": outer_train_idx,
@@ -298,9 +306,12 @@ class NestedCrossValidation:
                     "accuracy": accuracy,
                     "precision": precision,
                     "recall": recall,
+                    "specificity": specificity,
+                    "mcc": mcc,
                     "f1": f1,
-                    "mcc": mcc
+                    "roc_auc": roc_auc
                 })
+
         self.summary = pd.DataFrame(self.results)
         self.summary["mean_accuracy"] = self.summary.groupby("round")["accuracy"].transform("mean")
         self.summary["std_accuracy"] = self.summary.groupby("round")["accuracy"].transform("std")
