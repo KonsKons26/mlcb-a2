@@ -27,9 +27,10 @@ from optuna.samplers import TPESampler
 
 import joblib
 
+import contextlib
+
 from datetime import datetime
 
-import logging
 import warnings
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 warnings.filterwarnings("ignore", category=UserWarning, module='lightgbm')
@@ -41,12 +42,14 @@ VALID_MODELS = {
     "LinearDiscriminantAnalysis": LinearDiscriminantAnalysis(),
     "SVC": SVC(),
     "RandomForestClassifier": RandomForestClassifier(),
-    "LGBMClassifier": LGBMClassifier()
+    "LGBMClassifier": LGBMClassifier(verbosity=-1)
 }
 
 
 def time():
-    """Returns the current time in a formatted string."""
+    """
+    Returns the current time in a formatted string.
+    """
     now = datetime.now()
     return f"{now:%Y/%m/%d-%H:%M:%S}"
 
@@ -62,7 +65,8 @@ class NestedCrossValidation:
                  n_rounds=10, n_outer_folds=5, n_inner_folds=3,
                  n_features_to_select=5, n_optuna_trials=50,
                  metric=matthews_corrcoef, random_state_base=42):
-        """Initialize the NestedCrossValidation class.
+        """
+        Initialize the NestedCrossValidation class.
 
         Parameters
         ----------
@@ -88,6 +92,7 @@ class NestedCrossValidation:
         random_state_base : int, default=42
             The base random state for reproducibility.
         """
+        # User-defined attributes
         self.classifier_type = classifier
         self.classifier = VALID_MODELS[classifier]
         self.X = X
@@ -99,12 +104,28 @@ class NestedCrossValidation:
         self.n_optuna_trials = n_optuna_trials
         self.metric = metric
         self.random_state_base = random_state_base
+
+        # Initialize auto-generated attributes
         self.results = []
         self.summary = None
-
         self.hyperparam_spaces = self._define_hyperparameter_spaces()
 
     def _define_hyperparameter_spaces(self):
+        """
+        Define the hyperparameter spaces for each classifier.
+
+        This method returns a dictionary where the keys are classifier
+        names and the values are functions that take an Optuna trial
+        object and return a dictionary of hyperparameters.
+        The hyperparameters are defined using Optuna's suggest methods,
+        which allow for flexible and efficient hyperparameter tuning.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the hyperparameter spaces for each
+            classifier.
+        """
         return {
             "LogisticRegression": lambda trial: {
                 "solver": "saga",
@@ -157,7 +178,34 @@ class NestedCrossValidation:
         }
 
     def _objective(self, trial, X_train, y_train, X_val, y_val):
-        """Objective function for Optuna hyperparameter tuning."""
+        """
+        Objective function for Optuna hyperparameter tuning.
+
+        This method defines the objective function that Optuna will
+        optimize. It takes an Optuna trial object and the training and
+        validation data as input. The function returns the metric score
+        for the model trained with the hyperparameters suggested by
+        Optuna.
+
+        Parameters
+        ----------
+        trial : optuna.Trial
+            The Optuna trial object.
+        X_train : pd.DataFrame
+            The training feature matrix.
+        y_train : pd.Series
+            The training target variable.
+        X_val : pd.DataFrame
+            The validation feature matrix.
+        y_val : pd.Series
+            The validation target variable.
+
+        Returns
+        -------
+        float
+            The metric score for the model trained with the suggested
+            hyperparameters.
+        """
         # Get hyperparameters for the current trial
         hyperparams = self.hyperparam_spaces[self.classifier_type](trial)
 
@@ -168,8 +216,11 @@ class NestedCrossValidation:
 
         model_class = VALID_MODELS[self.classifier_type].__class__
         model = model_class(**hyperparams)
-        # Create the model with the selected hyperparameters
+
+        # Train the model with the selected hyperparameters
         model.fit(X_train, y_train)
+
+        # Predict on the validation set
         y_val_pred = model.predict(X_val)
 
         # Calculate the metric
@@ -177,7 +228,8 @@ class NestedCrossValidation:
 
 
     def run(self):
-        """Run the nested cross-validation.
+        """
+        Run the nested cross-validation.
 
         This method performs the nested cross-validation process, including
         hyperparameter tuning and feature selection. It stores the results
@@ -186,16 +238,33 @@ class NestedCrossValidation:
         """
         self.results = []
 
+        print("="*50)
+        print(f"Running Nested Cross Validation for {self.classifier_type}...")
+        print(f"Random state base: {self.random_state_base}")
+        print(f"Number of rounds: {self.n_rounds}")
+        print(f"Number of outer folds: {self.n_outer_folds}")
+        print(f"Number of inner folds: {self.n_inner_folds}")
+        print(f"Number of features to select: {self.n_features_to_select}")
+        print(f"Number of Optuna trials: {self.n_optuna_trials}")
+        print("="*50)
+
         for round_ in range(self.n_rounds):
+            print()
+            print(f"Round {round_ + 1}/{self.n_rounds}...")
+
+            # Set the random seed for this round
             round_seed = self.random_state_base + round_
 
+            # Enter the outer loop - Cross Validation
             outer_cv = StratifiedKFold(
                 n_splits=self.n_outer_folds,
                 shuffle=True, random_state=round_seed
             )
 
-            # Enter the outer loop - Cross Validation
-            for fold_idx, (outer_train_idx, outer_test_idx) in enumerate(outer_cv.split(self.X, self.y)):
+            for outer_fold_idx, (outer_train_idx, outer_test_idx) in enumerate(outer_cv.split(self.X, self.y)):
+                print()
+                print(f"Outer fold {outer_fold_idx + 1}/{self.n_outer_folds}...")
+
                 X_outer_train, X_outer_test = self.X.iloc[outer_train_idx], self.X.iloc[outer_test_idx]
                 y_outer_train, y_outer_test = self.y.iloc[outer_train_idx], self.y.iloc[outer_test_idx]
 
@@ -206,9 +275,8 @@ class NestedCrossValidation:
                 )
                 inner_best_score = -np.inf
                 best_trial = None
-                for inner_train_idx, inner_val_idx in inner_cv.split(
-                    X_outer_train, y_outer_train
-                ):
+                for inner_fold_idx, (inner_train_idx, inner_val_idx) in enumerate(inner_cv.split(X_outer_train, y_outer_train)):
+                    print(f"\rInner fold {inner_fold_idx + 1}/{self.n_inner_folds}...", end="")
                     X_inner_train, X_inner_val = X_outer_train.iloc[inner_train_idx], X_outer_train.iloc[inner_val_idx]
                     y_inner_train, y_inner_val = y_outer_train.iloc[inner_train_idx], y_outer_train.iloc[inner_val_idx]
 
@@ -254,15 +322,19 @@ class NestedCrossValidation:
                         n_jobs=-1
                     )
 
-                    # If current trial score is better than the best score
-                    # in the previous inner loops, update the best score,
-                    # hyperparameters, and features
+                    # If current trial score is better than the previous best
+                    # trial score, update the best trial and hyperparameters
                     trial_score = study.best_value
                     if trial_score > inner_best_score:
                         inner_best_score = trial_score
                         best_trial = study.best_trial
                         best_hyperparams = best_trial.params
                         best_selected_features = current_selected_features 
+
+                print()
+                print(f"Best trial score: {inner_best_score}")
+                print(f"Best hyperparameters: {best_hyperparams}")
+                print(f"Best selected features: {best_selected_features}")
 
                 best_hyperparams = best_trial.params
 
@@ -272,7 +344,6 @@ class NestedCrossValidation:
                         # Remove the shrinkage parameter from the dictionary.
                         best_hyperparams["shrinkage"] = None
 
-                # ---
                 # Train the model with the best hyperparameters from the inner
                 # loop on the outer training set
 
@@ -306,6 +377,15 @@ class NestedCrossValidation:
                 f1 = f1_score(y_outer_test, y_outer_pred)
                 roc_auc = roc_auc_score(y_outer_test, y_outer_pred)
 
+                print(f"Outer fold {outer_fold_idx + 1}/{self.n_outer_folds} results:")
+                print(f"Accuracy: {accuracy:.4f}")
+                print(f"Precision: {precision:.4f}")
+                print(f"Recall: {recall:.4f}")
+                print(f"Specificity: {specificity:.4f}")
+                print(f"MCC: {mcc:.4f}")
+                print(f"F1: {f1:.4f}")
+                print(f"ROC AUC: {roc_auc:.4f}")
+
                 self.results.append({
                     "round": round_ ,
                     "outer_fold": outer_train_idx,
@@ -335,6 +415,9 @@ class NestedCrossValidation:
 
 def pipeline(df, target, validation_set_fraction, seed):
     # --Find a good holdout set that does not contain any NaN values--
+    # This is done to ensure that the holdout set is not affected by
+    # the imputation of NaN values in the training set.
+
     # split to datasets with and without NaN values
     n = df.shape[0]
     nan_mask = df.isna().any(axis=1)
@@ -361,8 +444,8 @@ def pipeline(df, target, validation_set_fraction, seed):
         # "GaussianNB",
         # "LinearDiscriminantAnalysis",
         # "SVC",
-        # TODO: continue from here
         # "RandomForestClassifier",
+        # TODO: continue from here
         "LGBMClassifier"
     ]
     for clf in classifiers:
