@@ -304,6 +304,9 @@ class NestedCrossValidation:
                 inner_best_score = -np.inf
                 best_trial = None
                 for inner_fold_idx, (inner_train_idx, inner_val_idx) in enumerate(inner_cv.split(X_outer_train, y_outer_train)):
+                    # \r is used to overwrite the previous line in the console
+                    # This is useful for showing the progress of the inner loop
+                    # without printing a new line each time
                     print(f"\rInner fold {inner_fold_idx + 1}/{self.n_inner_folds}...", end="")
                     X_inner_train, X_inner_val = X_outer_train.iloc[inner_train_idx], X_outer_train.iloc[inner_val_idx]
                     y_inner_train, y_inner_val = y_outer_train.iloc[inner_train_idx], y_outer_train.iloc[inner_val_idx]
