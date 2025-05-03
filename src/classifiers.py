@@ -25,16 +25,12 @@ from mrmr import mrmr_classif
 import optuna
 from optuna.samplers import TPESampler
 
-import joblib
-
-import contextlib
+from joblib import dump, load
 
 from datetime import datetime
 
-import warnings
 optuna.logging.set_verbosity(optuna.logging.WARNING)
-warnings.filterwarnings("ignore", category=UserWarning, module='lightgbm')
-warnings.filterwarnings("ignore", category=UserWarning)
+
 
 VALID_MODELS = {
     "LogisticRegression": LogisticRegression(),
@@ -56,12 +52,12 @@ def time():
 
 def specificity_score(y_true, y_pred):
     """Calculate specificity score."""
-    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    tn, fp, _, _ = confusion_matrix(y_true, y_pred).ravel()
     return tn / (tn + fp)
 
 
 class NestedCrossValidation:
-    def __init__(self, classifier, X, y,
+    def __init__(self, classifier, X, y, models_dir, results_dir,
                  n_rounds=10, n_outer_folds=5, n_inner_folds=3,
                  n_features_to_select=5, n_optuna_trials=50,
                  metric=matthews_corrcoef, random_state_base=42):
@@ -77,6 +73,10 @@ class NestedCrossValidation:
             The feature matrix.
         y : pd.Series
             The target variable.
+        models_dir : str
+            The directory where the models will be saved.
+        results_dir : str
+            The directory where the results will be saved.
         n_rounds : int, default=10
             The number of rounds for cross-validation.
         n_outer_folds : int, default=5
@@ -97,6 +97,8 @@ class NestedCrossValidation:
         self.classifier = VALID_MODELS[classifier]
         self.X = X
         self.y = y
+        self.models_dir = models_dir
+        self.results_dir = results_dir
         self.n_rounds = n_rounds
         self.n_outer_folds = n_outer_folds
         self.n_inner_folds = n_inner_folds
@@ -226,6 +228,22 @@ class NestedCrossValidation:
         # Calculate the metric
         return self.metric(y_val, y_val_pred)
 
+    def _save_model(self, model, model_name):
+        """Saves the model to the models directory."""
+        model_name = model_name + ".joblib"
+        dump(model, os.path.join(self.models_dir, model_name))
+
+    def _save_scaler(self, scaler, scaler_name):
+        """Saves the scaler to the models directory."""
+        scaler_name = scaler_name + "_scaler.joblib"
+        dump(scaler, os.path.join(self.models_dir, scaler_name))
+
+    def _save_features(self, features, model_name):
+        """Saves the features to the models directory."""
+        features_name = model_name + "_features.txt"
+        with open(os.path.join(self.models_dir, features_name), "w") as f:
+            for feature in features:
+                f.write(f"{feature}\n")
 
     def run(self):
         """
@@ -236,8 +254,6 @@ class NestedCrossValidation:
         in the `self.results` attribute and summarizes the results in
         `self.summary`.
         """
-        self.results = []
-
         print("="*50)
         print(f"Running Nested Cross Validation for {self.classifier_type}...")
         print(f"Random state base: {self.random_state_base}")
@@ -248,27 +264,39 @@ class NestedCrossValidation:
         print(f"Number of Optuna trials: {self.n_optuna_trials}")
         print("="*50)
 
+        # FS ---------------------------------------------------------------
+        selected_features = mrmr_classif(
+            X=self.X,
+            y=self.y,
+            K=self.n_features_to_select,
+            show_progress=False
+        )
+
+        # --- nCV Rounds -------------------------------------------------------
         for round_ in range(self.n_rounds):
             print()
             print(f"Round {round_ + 1}/{self.n_rounds}...")
 
+
             # Set the random seed for this round
             round_seed = self.random_state_base + round_
 
-            # Enter the outer loop - Cross Validation
+            # --- Outer loops --------------------------------------------------
+            # Cross Validation
             outer_cv = StratifiedKFold(
                 n_splits=self.n_outer_folds,
                 shuffle=True, random_state=round_seed
             )
-
             for outer_fold_idx, (outer_train_idx, outer_test_idx) in enumerate(outer_cv.split(self.X, self.y)):
                 print()
                 print(f"Outer fold {outer_fold_idx + 1}/{self.n_outer_folds}...")
 
+                # Set up the data
                 X_outer_train, X_outer_test = self.X.iloc[outer_train_idx], self.X.iloc[outer_test_idx]
                 y_outer_train, y_outer_test = self.y.iloc[outer_train_idx], self.y.iloc[outer_test_idx]
 
-                # Enter the inner loop - Hyperparameter tuning
+                # --- Inner loop ----------------------------------------------- 
+                # Hyperparameter Tuning
                 inner_cv = StratifiedKFold(
                     n_splits=self.n_inner_folds,
                     shuffle=True, random_state=round_seed
@@ -294,15 +322,8 @@ class NestedCrossValidation:
                         index=X_inner_val.index
                     )
 
-                    # Feature selection using mRMR
-                    current_selected_features = mrmr_classif(
-                        X=X_inner_train,
-                        y=y_inner_train,
-                        K=self.n_features_to_select,
-                        show_progress=False
-                    )
-                    X_inner_train = X_inner_train[current_selected_features]
-                    X_inner_val = X_inner_val[current_selected_features]
+                    X_inner_train = X_inner_train[selected_features]
+                    X_inner_val = X_inner_val[selected_features]
 
                     # Optuna study for hyperparameter tuning
                     study = optuna.create_study(
@@ -329,12 +350,11 @@ class NestedCrossValidation:
                         inner_best_score = trial_score
                         best_trial = study.best_trial
                         best_hyperparams = best_trial.params
-                        best_selected_features = current_selected_features 
 
+                # Resume Outer Loop --------------------------------------------
                 print()
                 print(f"Best trial score: {inner_best_score}")
                 print(f"Best hyperparameters: {best_hyperparams}")
-                print(f"Best selected features: {best_selected_features}")
 
                 best_hyperparams = best_trial.params
 
@@ -361,8 +381,8 @@ class NestedCrossValidation:
                     index=X_outer_test.index
                 )
 
-                X_outer_train_final = X_outer_train_scaled[best_selected_features]
-                X_outer_test_final = X_outer_test_scaled[best_selected_features]
+                X_outer_train_final = X_outer_train_scaled[selected_features]
+                X_outer_test_final = X_outer_test_scaled[selected_features]
 
                 model = self.classifier.set_params(**best_hyperparams)
                 model.fit(X_outer_train_final, y_outer_train)
@@ -387,10 +407,11 @@ class NestedCrossValidation:
                 print(f"ROC AUC: {roc_auc:.4f}")
 
                 self.results.append({
-                    "round": round_ ,
-                    "outer_fold": outer_train_idx,
+                    "round": round_,
+                    "outer_loop": outer_fold_idx,
                     "inner_best_score": inner_best_score,
                     "best_hyperparams": best_hyperparams,
+                    "selected_features": selected_features,
                     "accuracy": accuracy,
                     "precision": precision,
                     "recall": recall,
@@ -400,7 +421,9 @@ class NestedCrossValidation:
                     "roc_auc": roc_auc
                 })
 
+        # Save the summary of the results --------------------------------------
         self.summary = pd.DataFrame(self.results)
+        self.summary["best_hyperparams"] = [d["best_hyperparams"] for d in self.results]
         self.summary["mean_accuracy"] = self.summary.groupby("round")["accuracy"].transform("mean")
         self.summary["std_accuracy"] = self.summary.groupby("round")["accuracy"].transform("std")
         self.summary["mean_precision"] = self.summary.groupby("round")["precision"].transform("mean")
@@ -411,9 +434,41 @@ class NestedCrossValidation:
         self.summary["std_f1"] = self.summary.groupby("round")["f1"].transform("std")
         self.summary["mean_mcc"] = self.summary.groupby("round")["mcc"].transform("mean")
         self.summary["std_mcc"] = self.summary.groupby("round")["mcc"].transform("std")
+        self.summary.to_csv(
+            os.path.join(self.results_dir, f"{self.classifier_type}_summary.csv"),
+            index=False
+        )
+
+        # Train the final model ------------------------------------------------
+        best_round = self.summary.loc[self.summary["mean_mcc"].idxmax()]
+        # Get the best hyperparams and features
+        best_hyperparams = best_round["best_hyperparams"]
+        best_features = best_round["selected_features"]
+        best_model = VALID_MODELS[self.classifier_type].set_params(**best_hyperparams)
+        # Feature selection and normalization
+        X = self.X[best_features]
+        scaler = StandardScaler()
+        scaler.fit(X)
+        X = pd.DataFrame(
+            scaler.transform(X),
+            columns=X.columns,
+            index=X.index
+        )
+        # Fit the model
+        best_model.fit(X, self.y)
+
+        # Save the model, scaler, and selected features
+        self._save_model(best_model, self.classifier_type)
+        self._save_scaler(scaler, self.classifier_type)
+        self._save_features(best_features, self.classifier_type)
 
 
-def pipeline(df, target, validation_set_fraction, seed):
+def pipeline(
+        classifiers, df, target, models_dir, results_dir,
+        n_rounds, n_outer_folds, n_inner_folds,
+        n_features_to_select, n_optuna_trials,
+        validation_set_fraction, seed
+    ):
     # --Find a good holdout set that does not contain any NaN values--
     # This is done to ensure that the holdout set is not affected by
     # the imputation of NaN values in the training set.
@@ -439,43 +494,28 @@ def pipeline(df, target, validation_set_fraction, seed):
     X = fill_nans_with_median(X, y, True)
 
     # --Run the nCV for each classifier--
-    classifiers = [
-        # "LogisticRegression",
-        # "GaussianNB",
-        # "LinearDiscriminantAnalysis",
-        # "SVC",
-        # "RandomForestClassifier",
-        # TODO: continue from here
-        "LGBMClassifier"
-    ]
     for clf in classifiers:
-        print(f"Running Nested Cross Validation for {clf}...")
+        print()
+        print(f"--- {clf} ---")
+        print()
         ncv = NestedCrossValidation(
             classifier=clf,
             X=X,
             y=y,
-            n_rounds=10,
-            n_outer_folds=5,
-            n_inner_folds=3,
-            n_features_to_select=5,
-            n_optuna_trials=50,
+            models_dir=models_dir,
+            results_dir=results_dir,
+            n_rounds=n_rounds,
+            n_outer_folds=n_outer_folds,
+            n_inner_folds=n_inner_folds,
+            n_features_to_select=n_features_to_select,
+            n_optuna_trials=n_optuna_trials,
             metric=matthews_corrcoef,
             random_state_base=seed
         )
         ncv.run()
-        print(ncv.summary)
-        ncv.summary.to_csv(
-            f"{clf}.csv",
-            index=False
-        )
+
     print("Pipeline completed.")
+    # Return the validation set ------------------------------------------------
+    return val_set
 
-if __name__ == "__main__":
-    # Example usage
-    # Load your dataset here
-    df = pd.read_csv("data/breast_cancer.csv")
-    target = "diagnosis"
-    validation_set_fraction = 0.1
-    seed = 42
 
-    pipeline(df, target, validation_set_fraction, seed)
