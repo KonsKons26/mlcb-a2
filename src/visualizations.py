@@ -19,7 +19,8 @@ def visualize_feature_dists(
         bins: int = 40,
         figsize: tuple[int, int] = (18, 6)
     ) -> None:
-    """Visualize the distribution of features in the DataFrame, split by class.
+    """
+    Visualize the distribution of features in the DataFrame, split by class.
 
     Parameters
     ----------
@@ -114,7 +115,8 @@ def plot_correlation_coefficients(
         corr_df: pd.DataFrame,
         title: str = "Correlation Coefficients",
     ) -> None:
-    """Plot the correlation coefficients of the features against the target.
+    """
+    Plot the correlation coefficients of the features against the target.
 
     Parameters
     ----------
@@ -175,7 +177,8 @@ def heatmap_correlations(
         figsize: tuple[int, int] = (16, 16),
         cmap: str = "crest"
     ) -> None:
-    """Plot a heatmap of the correlations between the features in the given
+    """
+    Plot a heatmap of the correlations between the features in the given
     dataframe.
 
     Parameters
@@ -234,7 +237,8 @@ def pairplot(
         hue: pd.Series = None,
         cmap: str = "cool"
     ):
-    """Plot a pairplot of the given data.
+    """
+    Plot a pairplot of the given data.
 
     Parameters
     ----------
@@ -337,32 +341,35 @@ def pairplot(
 def visualize_training_summary(
         names: list[str],
         dfs: list[pd.DataFrame],
-        metric: str = "balanced_accuracy"
+        boxplot_kws: dict
     ):
-    # statistics = [
-    #     "med",
-    #     "mean",
-    #     "std",
-    #     "max",
-    #     "min",
-    #     "cilo",
-    #     "cihi",
-    #     "ciwidth",
-    #     "q1",
-    #     "q3",
-    #     "iqr",
-    #     "whishi",
-    #     "whislo"
-    # ]
+    """
+    Visualizes the nested CV summary.
 
-    # Create boxplots of the training summary ---------------------------------
-    plt.figure(figsize=(20, 16))
-    for i, (clf, df) in enumerate(zip(names, dfs)):
-        temp_df = df.drop(columns=["round", "outer_loop", "inner_best_score", "best_hyperparams", "selected_features"])
-        print(i, clf, df.shape)
+     
+    """
+    # --- Create boxplots of the training summary, by classifier ---------------
+    for clf, df in zip(names, dfs):
+        plt.figure(figsize=boxplot_kws["figsize"])
+        temp_df = df.drop(
+            columns=["round", "outer_loop", "inner_best_score",
+                     "best_hyperparams", "selected_features"]
+        )
         plt.boxplot(temp_df, tick_labels=list(temp_df.columns))
+        plt.yticks([0.75, 0.8, 0.85, 0.9, 0.95, 1])
         plt.title(clf)
         plt.show()
+
+    # --- Create boxplots of the training summary, by metric -------------------
+    boxplot_metrics = boxplot_kws["metrics"]
+    for metric in boxplot_metrics:
+        collected_metrics = [df[metric] for df in dfs]
+        plt.figure(figsize=boxplot_kws["figsize"])
+        plt.boxplot(collected_metrics, tick_labels=names)
+        plt.yticks([0.75, 0.8, 0.85, 0.9, 0.95, 1])
+        plt.title(metric)
+        plt.show()
+
 
 if __name__ == "__main__":
     dfLR = pd.read_csv("results/LogisticRegression_summary.csv")
@@ -373,5 +380,12 @@ if __name__ == "__main__":
     dfLGBM = pd.read_csv("results/LGBMClassifier_summary.csv")
     visualize_training_summary(
         ["LR", "SVC", "RF", "LDA", "GNB", "LGBM"],
-        [dfLR, dfSVC, dfRF, dfLDA, dfGNB, dfLGBM]
+        [dfLR, dfSVC, dfRF, dfLDA, dfGNB, dfLGBM],
+        boxplot_kws={
+            "figsize": (20, 10),
+            "metrics": [
+                "balanced_accuracy", "accuracy", "precision", "recall",
+                "specificity", "matthews_corrcoef", "f1", "roc_auc"
+                ]
+        }
     )
