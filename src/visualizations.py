@@ -12,6 +12,8 @@ import plotly.graph_objects as go
 
 from scipy.stats import pearsonr, spearmanr, kendalltau
 
+import json
+
 
 def visualize_feature_dists(
         df: pd.DataFrame,
@@ -338,7 +340,7 @@ def pairplot(
     plt.show()
 
 
-def visualize_training_summary(
+def visualize_training_summary_boxplots(
         names: list[str],
         dfs: list[pd.DataFrame],
         boxplot_kws: dict
@@ -346,7 +348,37 @@ def visualize_training_summary(
     """
     Visualizes the nested CV summary.
 
-     
+    Parameters
+    ----------
+    names : list of str
+        The names of the classifiers.
+    dfs : list of pandas.DataFrame
+        The dataframes containing the training summary for each classifier.
+    boxplot_kws : dict
+        The keyword arguments for the boxplot function. Must contain the
+        following keys:
+            - figsize: tuple of int
+                The size of the figure to create for the boxplots.
+            - metrics: list of str
+                The metrics to plot the boxplots for.
+            - meanprops: dict
+                The properties of the mean points in the boxplots.
+            - boxprops: dict
+                The properties of the boxes in the boxplots.
+            - medianprops: dict
+                The properties of the median lines in the boxplots.
+            - flierprops: dict
+                The properties of the outliers in the boxplots.
+            - wiswidth: int
+                The width of the whiskers in the boxplots.
+            - showmeans: bool
+                Whether to show the mean points in the boxplots.
+
+    Returns
+    -------
+    None
+        Displays the boxplots of the training summary for each classifier and
+        each metric.
     """
     # --- Create boxplots of the training summary, by classifier ---------------
     for clf, df in zip(names, dfs):
@@ -355,9 +387,20 @@ def visualize_training_summary(
             columns=["round", "outer_loop", "inner_best_score",
                      "best_hyperparams", "selected_features"]
         )
-        plt.boxplot(temp_df, tick_labels=list(temp_df.columns))
+        bxplt = plt.boxplot(
+            temp_df, tick_labels=list(temp_df.columns),
+            showmeans=boxplot_kws["showmeans"],
+            meanprops=boxplot_kws["meanprops"],
+            boxprops=boxplot_kws["boxprops"],
+            medianprops=boxplot_kws["medianprops"],
+            flierprops=boxplot_kws["flierprops"]
+        )
+        for wis in bxplt["whiskers"]:
+            wis.set(linewidth=boxplot_kws["wiswidth"])
+        for cap in bxplt["caps"]:
+            cap.set(linewidth=boxplot_kws["wiswidth"])
         plt.yticks([0.75, 0.8, 0.85, 0.9, 0.95, 1])
-        plt.title(clf)
+        plt.title(clf, fontdict={"fontsize": 20})
         plt.show()
 
     # --- Create boxplots of the training summary, by metric -------------------
@@ -365,27 +408,51 @@ def visualize_training_summary(
     for metric in boxplot_metrics:
         collected_metrics = [df[metric] for df in dfs]
         plt.figure(figsize=boxplot_kws["figsize"])
-        plt.boxplot(collected_metrics, tick_labels=names)
-        plt.yticks([0.75, 0.8, 0.85, 0.9, 0.95, 1])
-        plt.title(metric)
+        bxplt = plt.boxplot(
+            collected_metrics, tick_labels=names,
+            showmeans=boxplot_kws["showmeans"],
+            meanprops=boxplot_kws["meanprops"],
+            boxprops=boxplot_kws["boxprops"],
+            medianprops=boxplot_kws["medianprops"],
+            flierprops=boxplot_kws["flierprops"]
+        )
+        for wis in bxplt["whiskers"]:
+            wis.set(linewidth=boxplot_kws["wiswidth"])
+        for cap in bxplt["caps"]:
+            cap.set(linewidth=boxplot_kws["wiswidth"])
+        plt.title(metric, fontdict={"fontsize": 20})
         plt.show()
 
 
-if __name__ == "__main__":
-    dfLR = pd.read_csv("results/LogisticRegression_summary.csv")
-    dfSVC = pd.read_csv("results/SVC_summary.csv")
-    dfRF = pd.read_csv("results/RandomForestClassifier_summary.csv")
-    dfLDA = pd.read_csv("results/LinearDiscriminantAnalysis_summary.csv")
-    dfGNB = pd.read_csv("results/GaussianNB_summary.csv")
-    dfLGBM = pd.read_csv("results/LGBMClassifier_summary.csv")
-    visualize_training_summary(
-        ["LR", "SVC", "RF", "LDA", "GNB", "LGBM"],
-        [dfLR, dfSVC, dfRF, dfLDA, dfGNB, dfLGBM],
-        boxplot_kws={
-            "figsize": (20, 10),
-            "metrics": [
-                "balanced_accuracy", "accuracy", "precision", "recall",
-                "specificity", "matthews_corrcoef", "f1", "roc_auc"
-                ]
-        }
-    )
+def tabulate_hyperparameter_spaces(
+        names: list[str],
+        json_paths: list[str]
+    ):
+    """
+    Tabulate the hyperparameter spaces for each classifier.
+    
+    Parameters
+    ----------
+    names : list of str
+        The names of the classifiers.
+    json_paths : list of str
+        The paths to the JSON files containing the hyperparameter spaces for
+        each classifier.
+
+    Returns
+    -------
+    None
+        Displays the hyperparameter spaces for each classifier in a table.
+    """
+    for name, file_path in zip(names, json_paths):
+        with open(file_path, "r") as f:
+            hyperparams = json.load(f)
+        print(f"{name:^50}")
+        print(f"{'='*50}")
+        for param, value in hyperparams.items():
+            if not value:
+                value = "None" 
+            if isinstance(value, list):
+                value = ", ".join([str(v) for v in value])
+            print(f"{param:<25}|{value:>25}")
+        print("\n\n")

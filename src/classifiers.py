@@ -27,6 +27,8 @@ from optuna.samplers import TPESampler
 
 from joblib import dump, load
 
+import json
+
 from datetime import datetime
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -238,6 +240,11 @@ class NestedCrossValidation:
         scaler_name = scaler_name + "_scaler.joblib"
         dump(scaler, os.path.join(self.models_dir, scaler_name))
 
+    def _save_params(self, params, model_name):
+        """Saves the selected hyperparameters,"""
+        with open(os.path.join(self.models_dir, f"{model_name}_params.json"), "w") as fp:
+            json.dump(params, fp)
+
     def _save_features(self, features, model_name):
         """Saves the features to the models directory."""
         features_name = model_name + "_features.txt"
@@ -430,31 +437,6 @@ class NestedCrossValidation:
         self.summary = pd.DataFrame(self.results)
         self.summary["best_hyperparams"] = [d["best_hyperparams"] for d in self.results]
         self.summary[f"{self.metric.__name__}_med"] = self.summary.groupby("round")[self.metric.__name__].transform("median")
-        # TODO: finalize whether these should be removed completely
-        # metric_names = [
-        #     "balanced_accuracy",
-        #     "accuracy",
-        #     "precision",
-        #     "recall",
-        #     "specificity",
-        #     "mcc",
-        #     "f1",
-        #     "roc_auc"
-        # ]
-        # for metric_name in metric_names:
-        #     self.summary[f"{metric_name}_med"] = self.summary.groupby("round")[metric_name].transform("median")
-        #     self.summary[f"{metric_name}_mean"] = self.summary.groupby("round")[metric_name].transform("mean")
-        #     self.summary[f"{metric_name}_std"] = self.summary.groupby("round")[metric_name].transform("std")
-        #     self.summary[f"{metric_name}_max"] = self.summary.groupby("round")[metric_name].transform("max")
-        #     self.summary[f"{metric_name}_min"] = self.summary.groupby("round")[metric_name].transform("min")
-        #     self.summary[f"{metric_name}_cihi"] = self.summary.groupby("round")[metric_name].transform("quantile", q=0.975)
-        #     self.summary[f"{metric_name}_cilo"] = self.summary.groupby("round")[metric_name].transform("quantile", q=0.025)
-        #     self.summary[f"{metric_name}_ciwidth"] = self.summary[f"{metric_name}_cihi"] - self.summary[f"{metric_name}_cilo"]
-        #     self.summary[f"{metric_name}_q1"] = self.summary.groupby("round")[metric_name].transform("quantile", q=0.25)
-        #     self.summary[f"{metric_name}_q3"] = self.summary.groupby("round")[metric_name].transform("quantile", q=0.75)
-        #     self.summary[f"{metric_name}_iqr"] = self.summary[f"{metric_name}_q3"] - self.summary[f"{metric_name}_q1"]
-        #     self.summary[f"{metric_name}_whishi"] = self.summary[f"{metric_name}_q3"] + 1.5 * self.summary[f"{metric_name}_iqr"]
-        #     self.summary[f"{metric_name}_whislo"] = self.summary[f"{metric_name}_q1"] - 1.5 * self.summary[f"{metric_name}_iqr"]
 
         self.summary.to_csv(
             os.path.join(self.results_dir, f"{self.classifier_type}_summary.csv"),
@@ -463,10 +445,12 @@ class NestedCrossValidation:
 
         # Train the final model ------------------------------------------------
         best_round = self.summary.loc[self.summary[f"{self.metric.__name__}_med"].idxmax()]
+
         # Get the best hyperparams and features
         best_hyperparams = best_round["best_hyperparams"]
         best_features = best_round["selected_features"]
         best_model = VALID_MODELS[self.classifier_type].set_params(**best_hyperparams)
+
         # Feature selection and normalization
         X = self.X[best_features]
         scaler = StandardScaler()
@@ -476,12 +460,14 @@ class NestedCrossValidation:
             columns=X.columns,
             index=X.index
         )
+
         # Fit the model
         best_model.fit(X, self.y)
 
-        # Save the model, scaler, and selected features
+        # Save the model, scaler, hyperparamerer space and selected features
         self._save_model(best_model, self.classifier_type)
         self._save_scaler(scaler, self.classifier_type)
+        self._save_params(best_hyperparams, self.classifier_type)
         self._save_features(best_features, self.classifier_type)
 
 
@@ -544,4 +530,5 @@ def pipeline(
     print("Pipeline completed.")
     # Return the validation set ------------------------------------------------
     return val_set
+
 
