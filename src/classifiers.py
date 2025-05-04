@@ -9,8 +9,8 @@ from src.preprocessing import fill_nans_with_median
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import (
-    matthews_corrcoef, accuracy_score, precision_score, recall_score,
-    f1_score, roc_auc_score, confusion_matrix
+    matthews_corrcoef, accuracy_score, balanced_accuracy_score, precision_score,
+    recall_score, f1_score, roc_auc_score, confusion_matrix
 )
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
@@ -277,7 +277,6 @@ class NestedCrossValidation:
             print()
             print(f"Round {round_ + 1}/{self.n_rounds}...")
 
-
             # Set the random seed for this round
             round_seed = self.random_state_base + round_
 
@@ -392,6 +391,7 @@ class NestedCrossValidation:
                 y_outer_pred = model.predict(X_outer_test_final)
 
                 # Calculate metrics
+                balanced_accuracy = balanced_accuracy_score(y_outer_test, y_outer_pred)
                 accuracy = accuracy_score(y_outer_test, y_outer_pred)
                 precision = precision_score(y_outer_test, y_outer_pred)
                 recall = recall_score(y_outer_test, y_outer_pred)
@@ -415,6 +415,7 @@ class NestedCrossValidation:
                     "inner_best_score": inner_best_score,
                     "best_hyperparams": best_hyperparams,
                     "selected_features": selected_features,
+                    "balanced_accuracy": balanced_accuracy,
                     "accuracy": accuracy,
                     "precision": precision,
                     "recall": recall,
@@ -423,27 +424,33 @@ class NestedCrossValidation:
                     "f1": f1,
                     "roc_auc": roc_auc
                 })
+        # Exit outer loop ------------------------------------------------------
 
         # Save the summary of the results --------------------------------------
         self.summary = pd.DataFrame(self.results)
         self.summary["best_hyperparams"] = [d["best_hyperparams"] for d in self.results]
-        self.summary["mean_accuracy"] = self.summary.groupby("round")["accuracy"].transform("mean")
-        self.summary["std_accuracy"] = self.summary.groupby("round")["accuracy"].transform("std")
-        self.summary["mean_precision"] = self.summary.groupby("round")["precision"].transform("mean")
-        self.summary["std_precision"] = self.summary.groupby("round")["precision"].transform("std")
-        self.summary["mean_recall"] = self.summary.groupby("round")["recall"].transform("mean")
-        self.summary["std_recall"] = self.summary.groupby("round")["recall"].transform("std")
-        self.summary["mean_f1"] = self.summary.groupby("round")["f1"].transform("mean")
-        self.summary["std_f1"] = self.summary.groupby("round")["f1"].transform("std")
-        self.summary["mean_mcc"] = self.summary.groupby("round")["mcc"].transform("mean")
-        self.summary["std_mcc"] = self.summary.groupby("round")["mcc"].transform("std")
+        metric_names = [
+            "balanced_accuracy",
+            "accuracy",
+            "precision",
+            "recall",
+            "specificity",
+            "mcc",
+            "f1",
+            "roc_auc"
+        ]
+        for metric_name in metric_names:
+            self.summary[f"{metric_name}_median"] = self.summary.groupby("round")[metric_name].transform("median")
+            self.summary[f"{metric_name}_mean"] = self.summary.groupby("round")[metric_name].transform("mean")
+            self.summary[f"{metric_name}_std"] = self.summary.groupby("round")[metric_name].transform("std")
+
         self.summary.to_csv(
             os.path.join(self.results_dir, f"{self.classifier_type}_summary.csv"),
             index=False
         )
 
         # Train the final model ------------------------------------------------
-        best_round = self.summary.loc[self.summary["mean_mcc"].idxmax()]
+        best_round = self.summary.loc[self.summary["mcc_mean"].idxmax()]
         # Get the best hyperparams and features
         best_hyperparams = best_round["best_hyperparams"]
         best_features = best_round["selected_features"]
@@ -490,6 +497,11 @@ def pipeline(
     # recombine the datasets
     df = pd.concat([df_with_nans, df_without_nans], ignore_index=True)
 
+    # rename columns with spaces in their name
+    for col in df.columns:
+        if " " in col:
+            df.rename(columns={col: col.replace(" ", "_")}, inplace=True)
+
     # --Fill NaN values with the median of the column--
     X = df.drop(columns=[target])
     y = df[target]
@@ -520,5 +532,4 @@ def pipeline(
     print("Pipeline completed.")
     # Return the validation set ------------------------------------------------
     return val_set
-
 
