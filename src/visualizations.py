@@ -332,3 +332,46 @@ def pairplot(
 
     plt.suptitle(title, y=1.02)
     plt.show()
+
+
+def visualize_training_summary(
+        names: list[str],
+        dfs: list[pd.DataFrame],
+        metric: str = "balanced_accuracy"
+    ):
+    # statistics = [
+    #     "med",
+    #     "mean",
+    #     "std",
+    #     "max",
+    #     "min",
+    #     "cilo",
+    #     "cihi",
+    #     "ciwidth",
+    #     "q1",
+    #     "q3",
+    #     "iqr",
+    #     "whishi",
+    #     "whislo"
+    # ]
+
+    # Create boxplots of the training summary ---------------------------------
+    plt.figure(figsize=(20, 16))
+    for i, (clf, df) in enumerate(zip(names, dfs)):
+        temp_df = df.drop(columns=["round", "outer_loop", "inner_best_score", "best_hyperparams", "selected_features"])
+        print(i, clf, df.shape)
+        plt.boxplot(temp_df, tick_labels=list(temp_df.columns))
+        plt.title(clf)
+        plt.show()
+
+if __name__ == "__main__":
+    dfLR = pd.read_csv("results/LogisticRegression_summary.csv")
+    dfSVC = pd.read_csv("results/SVC_summary.csv")
+    dfRF = pd.read_csv("results/RandomForestClassifier_summary.csv")
+    dfLDA = pd.read_csv("results/LinearDiscriminantAnalysis_summary.csv")
+    dfGNB = pd.read_csv("results/GaussianNB_summary.csv")
+    dfLGBM = pd.read_csv("results/LGBMClassifier_summary.csv")
+    visualize_training_summary(
+        ["LR", "SVC", "RF", "LDA", "GNB", "LGBM"],
+        [dfLR, dfSVC, dfRF, dfLDA, dfGNB, dfLGBM]
+    )

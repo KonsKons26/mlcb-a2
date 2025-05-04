@@ -1,6 +1,6 @@
-concave points_worst
+concave_points_worst
 perimeter_worst
-concave points_mean
+concave_points_mean
 radius_worst
 perimeter_mean
 area_worst
