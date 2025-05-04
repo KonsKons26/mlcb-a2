@@ -456,3 +456,30 @@ def tabulate_hyperparameter_spaces(
                 value = ", ".join([str(v) for v in value])
             print(f"{param:<25}|{value:>25}")
         print("\n\n")
+
+
+def visualize_bootstrap_results(
+        d, title="Best model metrics", figsize=(20, 10),
+        meanprops={"marker": "X", "markerfacecolor": "white",
+                   "markeredgecolor": "black", "markersize": 15},
+        medianprops={"color" : "black", "linewidth": 3},
+        boxprops={"linewidth": 3, "color": "#3486eb"},
+        flierprops={"markerfacecolor": "red", "markeredgecolor": "white",
+            "markersize": 10},
+        wis_width=3
+
+    ):
+    """Visualize the bootstrapping results."""
+    plt.figure(figsize=figsize)
+    bxplt = plt.boxplot(
+        d.values(), tick_labels=d.keys(), showmeans=True,
+        meanprops=meanprops,
+        medianprops=medianprops,
+        boxprops=boxprops,
+        flierprops=flierprops
+    )
+    for wis, cap in zip(bxplt["whiskers"], bxplt["caps"]):
+        wis.set(linewidth=wis_width)
+        cap.set(linewidth=wis_width)
+    plt.title(title, fontdict={"fontsize": 20})
+    plt.show()

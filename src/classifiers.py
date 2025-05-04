@@ -17,6 +17,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.utils import resample
 
 from lightgbm import LGBMClassifier
 
@@ -532,3 +533,93 @@ def pipeline(
     return val_set
 
 
+def validate(
+        data_dir,
+        file_name,
+        models_dir,
+        model_name,
+        target,
+        n_bootstraps,
+        seed=1
+
+    ):
+    """Function that returns a model's prediction on the holdout set."""
+    # Load the holdout set
+    val_set = pd.read_csv(
+        os.path.join(data_dir, file_name)
+    )
+
+    # Load the model
+    model = load(
+        os.path.join(models_dir, f"{model_name}.joblib")
+    )
+
+    # Load the scaler
+    scaler = load(
+        os.path.join(models_dir, f"{model_name}_scaler.joblib")
+    )
+
+    # Read the selected features
+    with open(
+        os.path.join(models_dir, f"{model_name}_features.txt"),
+        "r"
+    ) as fp:
+        stream = fp.readlines()
+        selected_features = [s.strip() for s in stream]
+
+    # Clean up the dataset so it matches what the model expects
+    X = val_set.drop(columns=[target, "id"])
+    for col in X.columns:
+        if " " in col:
+            X.rename(columns={col: col.replace(" ", "_")}, inplace=True)
+    X = X[selected_features]
+    y = val_set[target]
+    y = y.replace({"M": 1, "B": 0})
+
+    # Scale the data
+    X_scaled = pd.DataFrame(scaler.transform(X), columns=X.columns, index=X.index)
+
+    # Get the model's predictions
+    mcc = []
+    accuracy = []
+    balanced_accuracy = []
+    precision = []
+    recall = []
+    specificity = []
+    f1 = []
+    roc_auc = []
+
+    for round in range(n_bootstraps):
+        # Bootstrap the data
+        X_resampled, y_resampled = resample(X_scaled, y, random_state=seed + round)
+
+        # Fit the model on the resampled data
+        model.fit(X_resampled, y_resampled)
+
+        # Predict on the original data
+        y_pred = model.predict(X_scaled)
+
+        # Calculate metrics
+        mcc.append(matthews_corrcoef(y, y_pred))
+        accuracy.append(accuracy_score(y, y_pred))
+        balanced_accuracy.append(balanced_accuracy_score(y, y_pred))
+        precision.append(precision_score(y, y_pred))
+        recall.append(recall_score(y, y_pred))
+        specificity.append(specificity_score(y, y_pred))
+        f1.append(f1_score(y, y_pred))
+        roc_auc.append(roc_auc_score(y, y_pred))
+
+    return (
+        y,
+        y_pred,
+        {
+            "mcc": mcc,
+            "accuracy": accuracy,
+            "balanced_accuracy": balanced_accuracy,
+            "precision": precision,
+            "recall": recall,
+            "specificity": specificity,
+            "f1": f1,
+            "roc_auc": roc_auc
+        }
+    )
