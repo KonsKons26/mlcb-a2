@@ -1,9 +1,16 @@
-\contentsline {section}{\numberline {1}Abstract}{3}{section.1}%
-\contentsline {section}{\numberline {2}Introduction}{3}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Preprocessing}{3}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Data exploration}{4}{subsection.2.2}%
-\contentsline {section}{\numberline {3}Material and Methods}{8}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Outline}{8}{subsection.3.1}%
-\contentsline {section}{\numberline {4}Results and Discussion}{10}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Feature Selection}{10}{subsection.4.1}%
-\contentsline {section}{\numberline {5}Conclusion}{10}{section.5}%
+\contentsline {section}{\numberline {1}abstract}{2}{section.1}%
+\contentsline {section}{\numberline {2}introduction}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}preprocessing}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}data exploration}{3}{subsection.2.2}%
+\contentsline {section}{\numberline {3}material and methods}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}outline}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}feature selection}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}hyperparameter tuning}{9}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}model selection --- best model final training}{9}{subsection.3.4}%
+\contentsline {section}{\numberline {4}results and discussion}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}features}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}hyperparameters}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}training results}{10}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}best model evaluation}{12}{subsection.4.4}%
+\contentsline {section}{\numberline {5}conclusion}{13}{section.5}%
+\contentsline {section}{References}{14}{section.5}%

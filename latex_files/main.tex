@@ -18,9 +18,6 @@
 \usepackage{textcomp}
 \usepackage{subcaption}
 \usepackage{mathtools}
-\bibliographystyle{ieeetr}
-\bibliography{references}
-
 
 % chktex-file 13
 % chktex-file 24
@@ -62,8 +59,7 @@ here: \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Abstract
-\section{Abstract}
+\section{abstract}
 
 In this assignment, we are tasked with classifying a dataset consisting of 512
 samples of fine needle aspirate (FNA) measurements from breast masses. Each
@@ -75,9 +71,9 @@ bootstrapping.
 
 The classifiers will be tuned using \texttt{Optuna}, a hyperparameter
 optimization framework, while the features will be selected using \texttt{mRMR},
-a feature selection method which minimizes the redundancy and maximizes the
-relevance of the features. The classifiers will be evaluated using several
-metrics from the \texttt{scikit-learn} library.
+a feature selection method which minimizes the redundancy between features and
+maximizes their relevance to the target class. The classifiers will be evaluated
+using several metrics from the \texttt{scikit-learn} library.
 
 The classifiers used in this assignment are:
 
@@ -90,59 +86,92 @@ The classifiers used in this assignment are:
     \item LightGBM (LGBM)
 \end{itemize}
 
-The selected features were:\\
-$\bullet$ \texttt{concave\_points\_worst}
-$\bullet$ \texttt{perimeter\_worst}
-$\bullet$ \texttt{concave\_points\_mean}
-$\bullet$ \texttt{radius\_worst} \\
-$\bullet$ \texttt{perimeter\_mean}
-$\bullet$ \texttt{area\_worst}
-$\bullet$ \texttt{concavity\_mean}
-$\bullet$ \texttt{radius\_mean}
-$\bullet$ \texttt{concavity\_worst} \\
-$\bullet$ \texttt{area\_mean}.
+The \textbf{selected features} were:
+\begin{center}
+    \texttt{concave\_points\_worst}
+    $\bullet$ 
+    \texttt{perimeter\_worst}
+    $\bullet$ 
+    \texttt{concave\_points\_mean}
+    $\bullet$ 
+    \texttt{radius\_worst}
+    $\bullet$ 
+    \texttt{perimeter\_mean}
+    $\bullet$ 
+    \texttt{area\_worst}
+    $\bullet$ 
+    \texttt{concavity\_mean}
+    $\bullet$ 
+    \texttt{radius\_mean}
+    $\bullet$ 
+    \texttt{concavity\_worst}
+    $\bullet$ 
+    \texttt{area\_mean}
+\end{center}
 
 All models performed exceptionally well, with the best one being the
-\textbf{LDA} classifier. The optimal hyperparameters for the LDA classifier
-were: \\
-$\bullet$ \texttt{boosting\_type=dart}
-$\bullet$ \texttt{num\_leaves=32}
-$\bullet$ \texttt{max\_depth=53}
-$\bullet$ \texttt{learning\_rate=0.403} \\
-$\bullet$ \texttt{n\_estimators=903}
-$\bullet$ \texttt{min\_child\_sample=20}
-$\bullet$ \texttt{reg\_alpha=0.149}
-$\bullet$ \texttt{reg\_lambda=0.542} \\
-$\bullet$ \texttt{bagging\_freq=9}
-$\bullet$ \texttt{bagging\_fraction=0.455}
-$\bullet$ \texttt{feature\_fraction=0.589}.
-
+\textbf{LDA} classifier. The \textbf{optimal hyperparameters} for the LDA
+classifier were:
+\begin{center}
+    \texttt{boosting\_type=dart}
+    $\bullet$ 
+    \texttt{num\_leaves=32}
+    $\bullet$ 
+    \texttt{max\_depth=53}
+    $\bullet$ 
+    \texttt{learning\_rate=0.403}
+    $\bullet$ 
+    \texttt{n\_estimators=903}
+    $\bullet$ 
+    \texttt{min\_child\_sample=20}
+    $\bullet$ 
+    \texttt{reg\_alpha=0.149}
+    $\bullet$ 
+    \texttt{reg\_lambda=0.542}
+    $\bullet$ 
+    \texttt{bagging\_freq=9}
+    $\bullet$ 
+    \texttt{bagging\_fraction=0.455}
+    $\bullet$ 
+    \texttt{feature\_fraction=0.589}
+\end{center}
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Introduction
-\section{Introduction}
+\section{introduction}
 
-The features are extractred from a fine needle aspirate (FNA) of breast masses
-and they consist of the following 10 properties, each of which is described by
-is mean, standard error, and worst value (meaning the largest mean of the three
-largest values), leading to 30 features in total: \\
-$\bullet$ \texttt{radius}
-$\bullet$ \texttt{texture}
-$\bullet$ \texttt{perimeter}
-$\bullet$ \texttt{area}
-$\bullet$ \texttt{smoothness}
-$\bullet$ \texttt{compactness}
-$\bullet$ \texttt{concavity} \\
-$\bullet$ \texttt{concave\_points}
-$\bullet$ \texttt{symmetry}
-$\bullet$ \texttt{fractal\_dimension}.
+The features are extractred images from a fine needle aspirate
+(FNA)~\cite{Yu2012} of breast masses and they consist of the following 10
+\textbf{properties}, each of which is described by its mean, standard error, and
+worst value (meaning the largest mean of the three largest values), leading to
+30 features in total:
+\begin{center}
+    \texttt{radius}
+    $\bullet$ 
+    \texttt{texture}
+    $\bullet$ 
+    \texttt{perimeter}
+    $\bullet$ 
+    \texttt{area}
+    $\bullet$ 
+    \texttt{smoothness}
+    $\bullet$ 
+    \texttt{compactness}
+    $\bullet$ 
+    \texttt{concavity}
+    $\bullet$ 
+    \texttt{concave\_points}
+    $\bullet$ 
+    \texttt{symmetry}
+    $\bullet$ 
+    \texttt{fractal\_dimension}    
+\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Preprocessing}
+\subsection{preprocessing}
 
 The dataset needed to be preprocessed before being used. Afer inspection, it was
 found that the dataset contained some missing values, which needed to be
@@ -155,9 +184,17 @@ class. Also, for creating the holdout set, I chose only from the samples that
 had no missing values, so that the holdout set is not affected by the imputation
 process.
 
+The dataset was also imbalanced, with the benign class having 321 samples and
+the malignant class having 191 samples. I decided to leave the dataset as is,
+since the difference is not that big and the classifiers should be able to
+handle it. Also the ratio between the two classes seems to reflect the real
+world distribution of breast cancer cases, with the benign cases being more
+common than the malignant cases~\cite{%
+Ugiagbe_Olu-Eddo_2011,Bhathal_Brown_Lesueur_Russell_1985}.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Data exploration}
+\subsection{data exploration}
 
 A good practice before training a model is to explore the data and see if there
 are any patterns or correlations between the features and the target variable.
@@ -273,9 +310,9 @@ distribution, separating the two classes.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{ims/umap.png}
-    \caption{Pairplot of the first 5 embeddings / dimensions after dimensionality
-    reduction with \texttt{UMAP}. The scatter plots are colored by the target's
-    label (blue for benign and red for malignant).}
+    \caption{Pairplot of the first 5 embeddings / dimensions after
+    dimensionality reduction with \texttt{UMAP}. The scatter plots are colored
+    by the target's label (blue for benign and red for malignant).}
     \label{fig:umap}
 \end{figure}
 
@@ -284,11 +321,10 @@ select 10 features, as I have shown that
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Material and Methods
-\section{Material and Methods}
+\section{material and methods}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Outline}
+\subsection{outline}
 
 In essence, a nested cross-validation pipeline consists of two nested loops
 (outer and inner loops), encapsulated in a larger loop. In our case, the
@@ -319,25 +355,235 @@ ability of the model. A schematic of nested cross-validation is provided below
 The implementation of a nested cross-validation is easy, but it needs extra
 care to avoid data leakage. The data must be scaled inside the inner loop, after
 their final split, otherwise the training set will carry some information of the
-test set (and as always the scaler must be fitted only on the test set). I
-decided to perform feature selection using the whole training set, ignoring the
-fact that it might ``leak'' some information to the rest of the pipeline, as I
-believe it will be minimal.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Results and Discussion
-\section{Results and Discussion}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Feature Selection}
+test set (and as always the scaler must be fitted only on the test
+set)~\cite{Bates_2023}. I decided to perform feature selection using the whole
+training set, ignoring the fact that it might ``leak'' some information to the
+rest of the pipeline, as I believe it will be minimal and doing otherwise would
+have been ``overkill'' in tis case.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{feature selection}
+
+Feature selection was performed with the \texttt{mRMR}~\cite{mRMR}
+method which aims to minimize the redundancy between features and maximize their
+relevance to the target value.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Conclusion
-\section{Conclusion}
+\subsection{hyperparameter tuning}
+
+The hyperparameter tuning was performed inside the inner loop of the nested
+cross-validation. The hyperparameters were tuned using the \texttt{optimize}
+method of the \texttt{Optuna} library with a \texttt{TPE} sampler, which fits
+one Gaussian mixture model $l(x)$ to the set of parameters associated with the
+best objective values and another $g(x)$ to the remaining parameters and tries
+to maximize the ratio of the two, $\frac{l(x)}{g(x)}$. The objective function
+uses the Matthews Correlation Coefficient (MCC)~\cite{Chicco2023} as the metric
+to evaluate the performance of the model.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{model selection --- best model final training}
+
+After the nested cross-validation is complete, the best model is selected
+manually based on the over-all statistics. The selected model is fit on the
+complete dataset (minus the holdout set) using the features and hyperparameters
+selected and tested against the holdout set. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{results and discussion}
+
+The complete process for $R=10$, $N=5$, and $K=3$, and for 1000 \texttt{Optuna}
+trials, for all classifiers, took around one hour, on a machine with running
+Ubuntu 24, with 16 GB of RAM, an AMD Ryzen 7 5800H processor, and an
+NVIDIA GeForce RTX 3050 Ti graphics card. All classifiers trained at relatively
+similar speeds, with the exception of RF and LGBM, which took significantly
+more time than the rest.
+
+The complete process can be viewd in the \texttt{classification.ipynb} notebook,
+which also contains all outputs.
+
+\subsection{features}
+
+The selected features are shown below
+(Table~\ref{tab:features}).
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    \multicolumn{2}{|c|}{\textbf{Selected Features}} \\
+    \hline
+    \texttt{concave\_points\_worst} & \texttt{perimeter\_mean} \\
+    \hline
+    \texttt{perimeter\_worst}       & \texttt{area\_worst}     \\
+    \hline
+    \texttt{concave\_points\_mean}  & \texttt{concavity\_mean} \\
+    \hline
+    \texttt{radius\_worst}          & \texttt{radius\_mean}    \\
+    \hline
+    \texttt{concavity\_worst}       & \texttt{area\_mean}      \\
+    \hline
+    \end{tabular}
+    \caption{List of selected features}
+    \label{tab:features}
+\end{table}
+
+These features agree with the data shown in Frigure~\ref{fig:corr_coeffs} which
+ranks them as the features with the highest correlation out of all 30 in the
+dataset and from Firugre~\ref{fig:corr_coeffs_heatmap} we can see that although
+some of them are correlated, the correlations between them are not that high.
+
+
+\subsection{hyperparameters}
+
+The hyperparameters chosen by \texttt{Optuna} are provided in the Table below\
+(Table~\ref{tab:hyperparams_models}).
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Model} & \textbf{Parameter} & \textbf{Value} \\
+    \hline
+    \multirow{4}{*}{LogisticRegression}
+      & \texttt{C} & 43.7051 \\
+      & \texttt{l1\_ratio} & 0.0536 \\
+      & \texttt{max\_iter} & 1758 \\
+      & \texttt{class\_weight} & None \\
+    \hline
+    \multirow{1}{*}{GaussianNB}
+      & \texttt{var\_smoothing} & $1.94 \times 10^{-10}$ \\
+    \hline
+    \multirow{3}{*}{LinearDiscriminantAnalysis}
+      & \texttt{solver} & lsqr \\
+      & \texttt{shrinkage} & auto \\
+      & \texttt{priors} & None \\
+    \hline
+    \multirow{5}{*}{SVC}
+      & \texttt{C} & 0.8969 \\
+      & \texttt{gamma} & auto \\
+      & \texttt{coef0} & 0.0822 \\
+      & \texttt{kernel} & linear \\
+      & \texttt{class\_weight} & None \\
+    \hline
+    \multirow{3}{*}{RandomForestClassifier}
+      & \texttt{n\_estimators} & 32 \\
+      & \texttt{criterion} & gini \\
+      & \texttt{min\_samples\_split} & 12 \\
+    \hline
+    \multirow{10}{*}{LGBMClassifier}
+      & \texttt{boosting\_type} & dart \\
+      & \texttt{num\_leaves} & 32 \\
+      & \texttt{max\_depth} & 53 \\
+      & \texttt{learning\_rate} & 0.4030 \\
+      & \texttt{n\_estimators} & 903 \\
+      & \texttt{min\_child\_samples} & 20 \\
+      & \texttt{reg\_alpha} & 0.1486 \\
+      & \texttt{reg\_lambda} & 0.5418 \\
+      & \texttt{bagging\_freq} & 9 \\
+      & \texttt{bagging\_fraction} & 0.4555 \\
+      & \texttt{feature\_fraction} & 0.5883 \\
+    \hline
+    \end{tabular}
+    \caption{Best hyperparameters for each classifier after tuning. Numerical
+    values rounded for readability.}
+    \label{tab:hyperparams_models}
+\end{table}
+
+
+\subsection{training results}
+
+To capture the performance of the models the following metrics were used:
+\begin{center}
+    \texttt{balanced accuracy}
+    $\bullet$
+    \texttt{accuracy}
+    $\bullet$
+    \texttt{precision}
+    $\bullet$
+    \texttt{recall}
+    $\bullet$
+    \texttt{specificity}
+    $\bullet$
+    \texttt{MCC}
+    $\bullet$
+    \texttt{F1}
+    $\bullet$
+    \texttt{ROC AUC}
+\end{center}
+
+Below I include the boxplots for the Matthews correlation coefficient,
+recall, specificity, and balanced accuracy metrics that the models achieved
+during their training (Figures~\ref{fig:mcc},~\ref{fig:recall},~\ref{%
+fig:specificity},~\ref{fig:balanced_accuracy}), the rest are not included for
+brevity but they can be found in \texttt{classification.ipynb}.
+
+From these metrics we can see that LDA scored the best in all but one area,
+recall, which was expected due to the recall/specificity trade-off, as
+recall captures the proportion of actual positives correctly identified, while
+specificity captures the proportion of actual negatives correctly identified.
+\[
+recall = \frac{TP}{TP + FN}
+\]
+\[
+specificity = \frac{TN}{TN + FP}
+\]
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ims/mcc.png}
+    \caption{Matthews correlation coefficient for all models.}
+    \label{fig:mcc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ims/recall.png}
+    \caption{Recall for all models.}
+    \label{fig:recall}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ims/specificity.png}
+    \caption{Specificity for all models.}
+    \label{fig:specificity}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ims/balanced_accuracy.png}
+    \caption{Balanced accuracy for all models.}
+    \label{fig:balanced_accuracy}
+\end{figure}
+
+
+\subsection{best model evaluation}
+
+The best model was then tested against the holdout set, using the same metrics
+as above and 1000 rounds of resampling with bootstrapping to generate enough
+samples to calculate statistics. The results are shown in Figure~\ref{%
+fig:best_model_eval}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ims/best.png}
+    \caption{Best model evaluation metrics.}
+    \label{fig:best_model_eval}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{conclusion}
+
+\clearpage
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{ieeetr}
+\bibliography{references}
 
 \end{document}

@@ -1,3 +1,21 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{Yu2012}
+Y.-H. Yu, W.~Wei, and J.-L. Liu, ``Diagnostic value of fine-needle aspiration biopsy for breast mass: a systematic review and meta-analysis,'' {\em BMC Cancer}, vol.~12, no.~1, p.~41, 2012.
+
+\bibitem{Ugiagbe_Olu-Eddo_2011}
+E.~Ugiagbe and A.~Olu-Eddo, ``Benign breast lesions in an african population: A 25-year histopathological review of 1864 cases,'' {\em Nigerian Medical Journal}, vol.~52, p.~211, Jan. 2011.
+
+\bibitem{Bhathal_Brown_Lesueur_Russell_1985}
+P.~S. Bhathal, R.~W. Brown, G.~C. Lesueur, and I.~S. Russell, ``Frequency of benign and malignant breast lesions in 207 consecutive autopsies in australian women,'' {\em British Journal of Cancer}, vol.~51, pp.~271--278, Feb. 1985.
+
+\bibitem{Bates_2023}
+S.~Bates, T.~Hastie, and R.~Tibshirani, ``Cross-validation: What does it estimate and how well does it do it?,'' {\em Journal of the American Statistical Association}, vol.~119, pp.~1434--1445, May 2023.
+
+\bibitem{mRMR}
+C.~DING and H.~PENG, ``Minimum redundancy feature selection from microarray gene expression data,'' {\em Journal of Bioinformatics and Computational Biology}, vol.~03, no.~02, pp.~185--205, 2005.
+
+\bibitem{Chicco2023}
+D.~Chicco and G.~Jurman, ``The matthews correlation coefficient (mcc) should replace the roc auc as the standard metric for assessing binary classification,'' {\em BioData Mining}, vol.~16, no.~1, p.~4, 2023.
 
 \end{thebibliography}
