@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.10.23)  6 MAY 2025 21:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.10.23)  6 MAY 2025 22:16
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -537,6 +537,36 @@ Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 \xmathstrut@box=\box72
 \xmathstrut@dim=\dimen289
 )
+\bibdata{references}
+(./main.bbl
+
+./main.bbl:1: LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1 \begin{thebibliography}{}
+                             
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+./main.bbl:1: LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1 \begin{thebibliography}{}
+                             
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+LaTeX Warning: Empty `thebibliography' environment on input line 3.
+
+)
 runsystem(command -v pygmentize && touch main.aex)...executed.
 
 runsystem(rm main.aex)...executed.
@@ -548,24 +578,24 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -620,94 +650,134 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring OFF on input line 43.
- (./main.out) (./main.out)
+Package hyperref Info: Link coloring OFF on input line 45.
 \@outlinefile=\write5
 \openout5 = `main.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 46.
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 48.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 46.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 48.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (./main.toc)
+)
+No file main.toc.
 \tf@toc=\write6
 \openout6 = `main.toc'.
 
- [1
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
+[2] [3
 
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<ims/perimeter_worst.png, id=56, 1293.633pt x 427.8384pt>
+<ims/perimeter_worst.png, id=29, 1293.633pt x 427.8384pt>
 File: ims/perimeter_worst.png Graphic file (type png)
 <use ims/perimeter_worst.png>
-Package pdftex.def Info: ims/perimeter_worst.png  used on input line 165.
+Package pdftex.def Info: ims/perimeter_worst.png  used on input line 170.
 (pdftex.def)             Requested size: 489.10287pt x 161.7577pt.
-<ims/concave_points_worst.png, id=58, 1292.1876pt x 427.8384pt>
+<ims/concave_points_worst.png, id=31, 1292.1876pt x 427.8384pt>
 File: ims/concave_points_worst.png Graphic file (type png)
 <use ims/concave_points_worst.png>
-Package pdftex.def Info: ims/concave_points_worst.png  used on input line 173.
+Package pdftex.def Info: ims/concave_points_worst.png  used on input line 178.
 (pdftex.def)             Requested size: 489.10287pt x 161.9405pt.
-<ims/texture_se.png, id=59, 1293.633pt x 427.8384pt>
+<ims/texture_se.png, id=32, 1293.633pt x 427.8384pt>
 File: ims/texture_se.png Graphic file (type png)
 <use ims/texture_se.png>
-Package pdftex.def Info: ims/texture_se.png  used on input line 181.
+Package pdftex.def Info: ims/texture_se.png  used on input line 186.
 (pdftex.def)             Requested size: 489.10287pt x 161.7577pt.
- [3 <./ims/perimeter_worst.png> <./ims/concave_points_worst.png> <./ims/texture_se.png>]
-<ims/corr_coeffs.png, id=74, 1661.20625pt x 679.53876pt>
+
+
+LaTeX Warning: Reference `fig:perimeter_worst' on page 4 undefined on input line 192.
+
+
+LaTeX Warning: Reference `fig:area_worst' on page 4 undefined on input line 192.
+
+
+LaTeX Warning: Reference `fig:concave_points_se' on page 4 undefined on input line 195.
+
+[4 <./ims/perimeter_worst.png> <./ims/concave_points_worst.png> <./ims/texture_se.png>]
+
+LaTeX Warning: Reference `fig:corr_coeffs' on page 5 undefined on input line 205.
+
+<ims/corr_coeffs.png, id=44, 1661.20625pt x 679.53876pt>
 File: ims/corr_coeffs.png Graphic file (type png)
 <use ims/corr_coeffs.png>
-Package pdftex.def Info: ims/corr_coeffs.png  used on input line 207.
+Package pdftex.def Info: ims/corr_coeffs.png  used on input line 212.
 (pdftex.def)             Requested size: 489.10287pt x 200.06818pt.
-<ims/corr_coeffs_heatmap.png, id=76, 964.0818pt x 854.2314pt>
+
+LaTeX Warning: Reference `fig:corr_coeffs_heatmap' on page 5 undefined on input line 220.
+
+<ims/corr_coeffs_heatmap.png, id=45, 964.0818pt x 854.2314pt>
 File: ims/corr_coeffs_heatmap.png Graphic file (type png)
 <use ims/corr_coeffs_heatmap.png>
-Package pdftex.def Info: ims/corr_coeffs_heatmap.png  used on input line 226.
+Package pdftex.def Info: ims/corr_coeffs_heatmap.png  used on input line 231.
 (pdftex.def)             Requested size: 489.10287pt x 433.37122pt.
- [4 <./ims/corr_coeffs.png>]
-<ims/pca.png, id=87, 849.8952pt x 921.4425pt>
+[5 <./ims/corr_coeffs.png>]
+
+LaTeX Warning: Reference `fig:pca' on page 6 undefined on input line 252.
+
+
+LaTeX Warning: Reference `fig:umap' on page 6 undefined on input line 257.
+
+<ims/pca.png, id=53, 849.8952pt x 921.4425pt>
 File: ims/pca.png Graphic file (type png)
 <use ims/pca.png>
-Package pdftex.def Info: ims/pca.png  used on input line 261.
+Package pdftex.def Info: ims/pca.png  used on input line 266.
 (pdftex.def)             Requested size: 489.10287pt x 530.27525pt.
- [5 <./ims/corr_coeffs_heatmap.png>]
-<ims/umap.png, id=95, 849.8952pt x 921.4425pt>
+[6 <./ims/corr_coeffs_heatmap.png>]
+<ims/umap.png, id=60, 849.8952pt x 921.4425pt>
 File: ims/umap.png Graphic file (type png)
 <use ims/umap.png>
-Package pdftex.def Info: ims/umap.png  used on input line 270.
+Package pdftex.def Info: ims/umap.png  used on input line 275.
 (pdftex.def)             Requested size: 489.10287pt x 530.27525pt.
- [6 <./ims/pca.png>] [7 <./ims/umap.png>]
-<ims/nCV.drawio.png, id=108, 966.61125pt x 1033.8625pt>
+ [7 <./ims/pca.png>]
+
+LaTeX Warning: Reference `fig:ncv_scheme' on page 8 undefined on input line 303.
+
+[8 <./ims/umap.png>]
+<ims/nCV.drawio.png, id=76, 966.61125pt x 1033.8625pt>
 File: ims/nCV.drawio.png Graphic file (type png)
 <use ims/nCV.drawio.png>
-Package pdftex.def Info: ims/nCV.drawio.png  used on input line 302.
-(pdftex.def)             Requested size: 440.18959pt x 470.81834pt.
- [8 <./ims/nCV.drawio.png>] [9] (./main.aux)
+Package pdftex.def Info: ims/nCV.drawio.png  used on input line 307.
+(pdftex.def)             Requested size: 366.82715pt x 392.35124pt.
+ [9 <./ims/nCV.drawio.png>] [10] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: AB968BB0F6C2C1AA25FB230830DBA76E;848.
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  6DB6EB4DD63E2D09FBB85C27B36F0E7F;1086.
  ) 
 Here is how much of TeX's memory you used:
- 17469 strings out of 474222
- 297534 string characters out of 5748732
+ 17465 strings out of 474222
+ 297530 string characters out of 5748732
  1933975 words of memory out of 5000000
- 39438 multiletter control sequences out of 15000+600000
+ 39433 multiletter control sequences out of 15000+600000
  567338 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,6n,131p,753b,497s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,6n,131p,754b,497s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on main.pdf (9 pages, 1265365 bytes).
+Output written on main.pdf (10 pages, 1265194 bytes).
 PDF statistics:
- 160 PDF objects out of 1000 (max. 8388607)
- 117 compressed objects within 2 object streams
- 26 named destinations out of 1000 (max. 500000)
- 97 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 129 PDF objects out of 1000 (max. 8388607)
+ 86 compressed objects within 1 object stream
+ 30 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

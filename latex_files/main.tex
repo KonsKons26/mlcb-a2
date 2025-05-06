@@ -18,6 +18,8 @@
 \usepackage{textcomp}
 \usepackage{subcaption}
 \usepackage{mathtools}
+\bibliographystyle{ieeetr}
+\bibliography{references}
 
 
 % chktex-file 13
@@ -72,8 +74,9 @@ the holdout set will be used to evaluate the performance of the best one using
 bootstrapping.
 
 The classifiers will be tuned using \texttt{Optuna}, a hyperparameter
-optimization framework, while the features will be selected using \texttt{MrMR},
-a feature selection method. The classifiers will be evaluated using several
+optimization framework, while the features will be selected using \texttt{mRMR},
+a feature selection method which minimizes the redundancy and maximizes the
+relevance of the features. The classifiers will be evaluated using several
 metrics from the \texttt{scikit-learn} library.
 
 The classifiers used in this assignment are:
@@ -87,8 +90,7 @@ The classifiers used in this assignment are:
     \item LightGBM (LGBM)
 \end{itemize}
 
-All models performed exceptionally well, with the best one being the LDA
-classifier. The selected features were:\\
+The selected features were:\\
 $\bullet$ \texttt{concave\_points\_worst}
 $\bullet$ \texttt{perimeter\_worst}
 $\bullet$ \texttt{concave\_points\_mean}
@@ -98,8 +100,11 @@ $\bullet$ \texttt{area\_worst}
 $\bullet$ \texttt{concavity\_mean}
 $\bullet$ \texttt{radius\_mean}
 $\bullet$ \texttt{concavity\_worst} \\
-$\bullet$ \texttt{area\_mean}. \\
-The optimal hyperparameters for the LDA classifier were: \\
+$\bullet$ \texttt{area\_mean}.
+
+All models performed exceptionally well, with the best one being the
+\textbf{LDA} classifier. The optimal hyperparameters for the LDA classifier
+were: \\
 $\bullet$ \texttt{boosting\_type=dart}
 $\bullet$ \texttt{num\_leaves=32}
 $\bullet$ \texttt{max\_depth=53}
@@ -146,7 +151,7 @@ which needed to be replaced with underscores.
 
 I decided to use the median of each column to impute the missing values, while
 respecting the class labels, so that the imputation is done separately for each
-class. Also, for selecting the holdout set, I chose only from the samples that
+class. Also, for creating the holdout set, I chose only from the samples that
 had no missing values, so that the holdout set is not affected by the imputation
 process.
 
@@ -274,7 +279,7 @@ distribution, separating the two classes.
     \label{fig:umap}
 \end{figure}
 
-With all the above in mind, I decided to set up the \texttt{MrMR} function to
+With all the above in mind, I decided to set up the \texttt{mRMR} function to
 select 10 features, as I have shown that 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -299,7 +304,7 @@ ability of the model. A schematic of nested cross-validation is provided below
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{ims/nCV.drawio.png}
+    \includegraphics[width=0.75\textwidth]{ims/nCV.drawio.png}
     \caption{Nested cross-validation scheme. A holdout set is first taken from
     the dataset, here set to $10\%$. Then, $R$ times, the model is trained
     using cross-validation ($N$ splits), with an inner loop of hyperparameter
@@ -324,6 +329,14 @@ believe it will be minimal.
 % Results and Discussion
 \section{Results and Discussion}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Feature Selection}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Conclusion
+\section{Conclusion}
 
 
 
