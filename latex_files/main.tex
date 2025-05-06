@@ -416,15 +416,15 @@ The selected features are shown below
     \hline
     \multicolumn{2}{|c|}{\textbf{Selected Features}} \\
     \hline
-    \texttt{concave\_points\_worst} & \texttt{perimeter\_mean} \\
+    \texttt{concave\_points\_worst} & \texttt{concave\_points\_mean} \\
     \hline
-    \texttt{perimeter\_worst}       & \texttt{area\_worst}     \\
+    \texttt{perimeter\_worst}       & \texttt{perimeter\_mean} \\
     \hline
-    \texttt{concave\_points\_mean}  & \texttt{concavity\_mean} \\
+    \texttt{area\_worst}            & \texttt{area\_mean} \\
     \hline
-    \texttt{radius\_worst}          & \texttt{radius\_mean}    \\
+    \texttt{radius\_worst}          & \texttt{radius\_mean} \\
     \hline
-    \texttt{concavity\_worst}       & \texttt{area\_mean}      \\
+    \texttt{concavity\_worst}       & \texttt{concavity\_mean} \\
     \hline
     \end{tabular}
     \caption{List of selected features}
@@ -435,6 +435,10 @@ These features agree with the data shown in Frigure~\ref{fig:corr_coeffs} which
 ranks them as the features with the highest correlation out of all 30 in the
 dataset and from Firugre~\ref{fig:corr_coeffs_heatmap} we can see that although
 some of them are correlated, the correlations between them are not that high.
+
+The features selected by the pipeline are descriptors of properties that a human
+histopathologist would look for when trying to classify a mass as benign or
+malignant~\cite{Weigelt_2010}.
 
 
 \subsection{hyperparameters}
@@ -580,6 +584,17 @@ fig:best_model_eval}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{conclusion}
+
+Nested cross-validation is a robust approach for training machine learning
+models, particularly when paired with advanced feature selection and
+hyperparameter optimization techniques such as \texttt{mRMR} and
+\texttt{Optuna}. A Linear Discriminant Analysis model achieved excellent
+performance on unseen data, with precision and specificity of 1.0, accuracy, F1
+score, and ROC AUC exceeding 0.9, a Matthews correlation coefficient of 0.9, and
+recall above 0.8. These results suggest strong generalization capabilities and a
+very low incidence of false negatives. Moreover, the selected features align
+with known physiological characteristics, supporting the model's
+interpretability and biological relevance.
 
 \clearpage
 \addcontentsline{toc}{section}{References}
