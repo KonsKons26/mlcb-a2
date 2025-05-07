@@ -23,6 +23,8 @@ from lightgbm import LGBMClassifier
 
 from mrmr import mrmr_classif
 
+import umap
+
 import optuna
 from optuna.samplers import TPESampler
 
@@ -62,8 +64,9 @@ def specificity_score(y_true, y_pred):
 class NestedCrossValidation:
     def __init__(self, classifier, X, y, models_dir, results_dir,
                  n_rounds=10, n_outer_folds=5, n_inner_folds=3,
-                 n_features_to_select=5, n_optuna_trials=50,
-                 metric=matthews_corrcoef, random_state_base=42):
+                 n_optuna_trials=50, metric=matthews_corrcoef,
+                 fs_method=None, n_features_to_select=5,
+                 random_state_base=42):
         """
         Initialize the NestedCrossValidation class.
 
@@ -86,12 +89,15 @@ class NestedCrossValidation:
             The number of outer folds for cross-validation.
         n_inner_folds : int, default=3
             The number of inner folds for cross-validation.
-        n_features_to_select : int, default=5
-            The number of features to select using mRMR.
         n_optuna_trials : int, default=50
             The number of trials for Optuna hyperparameter tuning.
         metric : callable, default=matthews_corrcoef
             The metric to use for evaluating the model.
+        fs_method : None | int, default=None.
+            If None, no feature selection method performed. Valid methods are
+            "mRMR" and "UMAP".
+        n_features_to_select : int, default=5
+            The number of features to select using mRMR.
         random_state_base : int, default=42
             The base random state for reproducibility.
         """
@@ -105,9 +111,10 @@ class NestedCrossValidation:
         self.n_rounds = n_rounds
         self.n_outer_folds = n_outer_folds
         self.n_inner_folds = n_inner_folds
-        self.n_features_to_select = n_features_to_select
         self.n_optuna_trials = n_optuna_trials
         self.metric = metric
+        self.n_features_to_select = n_features_to_select
+        self.fs_method = fs_method
         self.random_state_base = random_state_base
 
         # Initialize auto-generated attributes
@@ -246,6 +253,11 @@ class NestedCrossValidation:
         with open(os.path.join(self.models_dir, f"{model_name}_params.json"), "w") as fp:
             json.dump(params, fp)
 
+    def _save_umap(self, umapper, umap_name):
+        """Saves the UMAP object."""
+        umap_name = umap_name + "_umap.joblib"
+        dump(umapper, os.path.join(self.models_dir, umap_name))
+
     def _save_features(self, features, model_name):
         """Saves the features to the models directory."""
         features_name = model_name + "_features.txt"
@@ -272,13 +284,33 @@ class NestedCrossValidation:
         print(f"Number of Optuna trials: {self.n_optuna_trials}")
         print("="*50)
 
-        # FS ---------------------------------------------------------------
-        selected_features = mrmr_classif(
-            X=self.X,
-            y=self.y,
-            K=self.n_features_to_select,
-            show_progress=False
-        )
+        # FS -------------------------------------------------------------------
+        if not self.fs_method:
+            selected_features = self.X.columns.tolist()
+
+        elif self.fs_method.upper() == "MRMR":
+            selected_features = mrmr_classif(
+                X=self.X,
+                y=self.y,
+                K=self.n_features_to_select,
+                show_progress=False
+            )
+        elif self.fs_method.upper() == "UMAP":
+            if self.n_features_to_select > 5:
+                self.n_features_to_select = 5
+                raise Warning(
+                    "Set n_features_to_select to max (5) which is the "
+                    "maximum allowed by UMAP."
+                    )
+            umap_model = umap.UMAP(n_components=self.n_features_to_select)
+            umap_model.fit(self.X)
+            self.X = umap_model.transform(self.X)
+            self.X = pd.DataFrame(self.X, columns=[f"UMAP{i}" for i in range(self.n_features_to_select)])
+            selected_features = self.X.columns
+            self._save_umap(umap_model, self.classifier_type)
+
+        else:
+            raise ValueError(f"Unknown feature selection method: {self.fs_method}")
 
         # --- nCV Rounds -------------------------------------------------------
         for round_ in range(self.n_rounds):
@@ -475,8 +507,9 @@ class NestedCrossValidation:
 def pipeline(
         classifiers, df, target, models_dir, results_dir,
         n_rounds, n_outer_folds, n_inner_folds,
-        n_features_to_select, n_optuna_trials,
-        validation_set_fraction, seed
+        n_optuna_trials, validation_set_fraction,
+        fs_method, n_features_to_select,
+        seed
     ):
     # --Find a good holdout set that does not contain any NaN values--
     # This is done to ensure that the holdout set is not affected by
@@ -510,7 +543,7 @@ def pipeline(
     # --Run the nCV for each classifier--
     for clf in classifiers:
         print()
-        print(f"--- {clf} ---")
+        print(f"[{time()}] --- {clf} ---")
         print()
         ncv = NestedCrossValidation(
             classifier=clf,
@@ -521,9 +554,10 @@ def pipeline(
             n_rounds=n_rounds,
             n_outer_folds=n_outer_folds,
             n_inner_folds=n_inner_folds,
-            n_features_to_select=n_features_to_select,
             n_optuna_trials=n_optuna_trials,
             metric=matthews_corrcoef,
+            fs_method=fs_method,
+            n_features_to_select=n_features_to_select,
             random_state_base=seed
         )
         ncv.run()
@@ -540,6 +574,7 @@ def validate(
         model_name,
         target,
         n_bootstraps,
+        fs_method=None,
         seed=1
 
     ):
@@ -549,6 +584,11 @@ def validate(
         os.path.join(data_dir, file_name)
     )
 
+    # Clean up the dataset so it matches what the model expects
+    X = val_set.drop(columns=[target, "id"])
+    for col in X.columns:
+        if " " in col:
+            X.rename(columns={col: col.replace(" ", "_")}, inplace=True)
     # Load the model
     model = load(
         os.path.join(models_dir, f"{model_name}.joblib")
@@ -558,21 +598,36 @@ def validate(
     scaler = load(
         os.path.join(models_dir, f"{model_name}_scaler.joblib")
     )
+    if not fs_method:
+        print("No FS.")
 
-    # Read the selected features
-    with open(
-        os.path.join(models_dir, f"{model_name}_features.txt"),
-        "r"
-    ) as fp:
-        stream = fp.readlines()
-        selected_features = [s.strip() for s in stream]
+    elif fs_method.upper == "MRMR":
+        # Read the selected features
+        with open(
+            os.path.join(models_dir, f"{model_name}_features.txt"),
+            "r"
+        ) as fp:
+            stream = fp.readlines()
+            selected_features = [s.strip() for s in stream]
+        X = X[selected_features]
 
-    # Clean up the dataset so it matches what the model expects
-    X = val_set.drop(columns=[target, "id"])
-    for col in X.columns:
-        if " " in col:
-            X.rename(columns={col: col.replace(" ", "_")}, inplace=True)
-    X = X[selected_features]
+    elif fs_method.upper() == "UMAP":
+        umap_model = load(
+            os.path.join(models_dir, f"{model_name}_umap.joblib")
+        )
+        X = umap_model.transform(X)
+        with open(
+            os.path.join(models_dir, f"{model_name}_features.txt"),
+            "r"
+        ) as fp:
+            stream = fp.readlines()
+            selected_features = [s.strip() for s in stream]
+        X = pd.DataFrame(X, columns=selected_features)
+
+    else:
+        raise ValueError("Invalid FS method!!")
+
+
     y = val_set[target]
     y = y.replace({"M": 1, "B": 0})
 

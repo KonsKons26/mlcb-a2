@@ -1,1 +1,0 @@
-{"boosting_type": "dart", "num_leaves": 32, "max_depth": 53, "learning_rate": 0.4029686515997516, "n_estimators": 903, "min_child_samples": 20, "reg_alpha": 0.14861982893537418, "reg_lambda": 0.5418206714566705, "bagging_freq": 9, "bagging_fraction": 0.45547908739799337, "feature_fraction": 0.588291320857423}
