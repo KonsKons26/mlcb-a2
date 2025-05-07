@@ -1,0 +1,1 @@
+{"solver": "lsqr", "shrinkage": "auto", "priors": [0.5, 0.5]}

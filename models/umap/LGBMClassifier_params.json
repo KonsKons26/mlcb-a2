@@ -1,0 +1,1 @@
+{"boosting_type": "rf", "num_leaves": 10, "max_depth": 70, "learning_rate": 0.0004765958501508434, "n_estimators": 298, "min_child_samples": 45, "reg_alpha": 0.6798077424801602, "reg_lambda": 0.24028284403640637, "bagging_freq": 7, "bagging_fraction": 0.7566968375340895, "feature_fraction": 0.6616669089344895}
