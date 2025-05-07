@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.10.23)  7 MAY 2025 01:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2024.10.23)  7 MAY 2025 22:51
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -536,6 +536,13 @@ Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 \l_MT_below_shortintertext_sep=\dimen288
 \xmathstrut@box=\box72
 \xmathstrut@dim=\dimen289
+) (/usr/share/texlive/texmf-dist/tex/latex/tocbibind/tocbibind.sty
+Package: tocbibind 2010/10/13 v1.5k extra ToC listings
+Package tocbibind Info: The document has section divisions on input line 50.
+
+
+Package tocbibind Note: Using section or other style headings.
+
 )
 runsystem(command -v pygmentize && touch main.aex)...executed.
 
@@ -548,24 +555,24 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 43.
+LaTeX Font Info:    ... okay on input line 43.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -616,22 +623,28 @@ LaTeX Font Info:    ... okay on input line 42.
 \everyMPtoPDFconversion=\toks35
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+ (/usr/share/texlive/texmf-dist/tex/latex/grfext/grfext.sty
+Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
+)
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 504.
  (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring OFF on input line 42.
+Package hyperref Info: Link coloring OFF on input line 43.
  (./main.out) (./main.out)
 \@outlinefile=\write5
 \openout5 = `main.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 46.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 46.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (./main.toc)
@@ -643,101 +656,99 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
 
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<ims/perimeter_worst.png, id=104, 1293.633pt x 427.8384pt>
+<ims/perimeter_worst.png, id=110, 1293.633pt x 427.8384pt>
 File: ims/perimeter_worst.png Graphic file (type png)
 <use ims/perimeter_worst.png>
 Package pdftex.def Info: ims/perimeter_worst.png  used on input line 207.
 (pdftex.def)             Requested size: 489.10287pt x 161.7577pt.
-<ims/concave_points_worst.png, id=106, 1292.1876pt x 427.8384pt>
+<ims/concave_points_worst.png, id=112, 1292.1876pt x 427.8384pt>
 File: ims/concave_points_worst.png Graphic file (type png)
 <use ims/concave_points_worst.png>
 Package pdftex.def Info: ims/concave_points_worst.png  used on input line 215.
 (pdftex.def)             Requested size: 489.10287pt x 161.9405pt.
-<ims/texture_se.png, id=107, 1293.633pt x 427.8384pt>
+<ims/texture_se.png, id=113, 1293.633pt x 427.8384pt>
 File: ims/texture_se.png Graphic file (type png)
 <use ims/texture_se.png>
 Package pdftex.def Info: ims/texture_se.png  used on input line 223.
 (pdftex.def)             Requested size: 489.10287pt x 161.7577pt.
  [3 <./ims/perimeter_worst.png> <./ims/concave_points_worst.png>]
-<ims/corr_coeffs.png, id=122, 1661.20625pt x 679.53876pt>
+<ims/corr_coeffs.png, id=128, 1661.20625pt x 679.53876pt>
 File: ims/corr_coeffs.png Graphic file (type png)
 <use ims/corr_coeffs.png>
 Package pdftex.def Info: ims/corr_coeffs.png  used on input line 249.
 (pdftex.def)             Requested size: 489.10287pt x 200.06818pt.
-<ims/corr_coeffs_heatmap.png, id=124, 964.0818pt x 854.2314pt>
+<ims/corr_coeffs_heatmap.png, id=130, 964.0818pt x 854.2314pt>
 File: ims/corr_coeffs_heatmap.png Graphic file (type png)
 <use ims/corr_coeffs_heatmap.png>
 Package pdftex.def Info: ims/corr_coeffs_heatmap.png  used on input line 268.
 (pdftex.def)             Requested size: 489.10287pt x 433.37122pt.
  [4 <./ims/texture_se.png> <./ims/corr_coeffs.png>]
-<ims/pca.png, id=137, 849.8952pt x 921.4425pt>
+<ims/pca.png, id=143, 849.8952pt x 921.4425pt>
 File: ims/pca.png Graphic file (type png)
 <use ims/pca.png>
 Package pdftex.def Info: ims/pca.png  used on input line 303.
 (pdftex.def)             Requested size: 489.10287pt x 530.27525pt.
  [5 <./ims/corr_coeffs_heatmap.png>]
-<ims/umap.png, id=145, 849.8952pt x 921.4425pt>
+<ims/umap.png, id=151, 849.8952pt x 921.4425pt>
 File: ims/umap.png Graphic file (type png)
 <use ims/umap.png>
 Package pdftex.def Info: ims/umap.png  used on input line 312.
 (pdftex.def)             Requested size: 489.10287pt x 530.27525pt.
  [6 <./ims/pca.png>] [7 <./ims/umap.png>]
-<ims/nCV.drawio.png, id=158, 966.61125pt x 1033.8625pt>
+<ims/nCV.drawio.png, id=164, 966.61125pt x 1033.8625pt>
 File: ims/nCV.drawio.png Graphic file (type png)
 <use ims/nCV.drawio.png>
-Package pdftex.def Info: ims/nCV.drawio.png  used on input line 343.
+Package pdftex.def Info: ims/nCV.drawio.png  used on input line 347.
 (pdftex.def)             Requested size: 366.82715pt x 392.35124pt.
- [8 <./ims/nCV.drawio.png>] [9]
-<ims/mcc.png, id=189, 1163.547pt x 609.9588pt>
+ [8 <./ims/nCV.drawio.png>] [9] [10]
+<ims/mcc.png, id=209, 1163.547pt x 609.9588pt>
 File: ims/mcc.png Graphic file (type png)
 <use ims/mcc.png>
-Package pdftex.def Info: ims/mcc.png  used on input line 542.
+Package pdftex.def Info: ims/mcc.png  used on input line 555.
 (pdftex.def)             Requested size: 489.10287pt x 256.39502pt.
- [10]
-<ims/recall.png, id=200, 1163.547pt x 609.9588pt>
+<ims/recall.png, id=210, 1163.547pt x 609.9588pt>
 File: ims/recall.png Graphic file (type png)
 <use ims/recall.png>
-Package pdftex.def Info: ims/recall.png  used on input line 549.
+Package pdftex.def Info: ims/recall.png  used on input line 562.
 (pdftex.def)             Requested size: 489.10287pt x 256.39502pt.
-<ims/specificity.png, id=201, 1170.0513pt x 609.9588pt>
+ [11 <./ims/mcc.png>]
+<ims/specificity.png, id=220, 1170.0513pt x 609.9588pt>
 File: ims/specificity.png Graphic file (type png)
 <use ims/specificity.png>
-Package pdftex.def Info: ims/specificity.png  used on input line 556.
+Package pdftex.def Info: ims/specificity.png  used on input line 569.
 (pdftex.def)             Requested size: 489.10287pt x 254.97101pt.
- [11 <./ims/mcc.png> <./ims/recall.png>]
-<ims/balanced_accuracy.png, id=208, 1170.0513pt x 609.9588pt>
+<ims/balanced_accuracy.png, id=221, 1170.0513pt x 609.9588pt>
 File: ims/balanced_accuracy.png Graphic file (type png)
 <use ims/balanced_accuracy.png>
-Package pdftex.def Info: ims/balanced_accuracy.png  used on input line 563.
+Package pdftex.def Info: ims/balanced_accuracy.png  used on input line 576.
 (pdftex.def)             Requested size: 489.10287pt x 254.97101pt.
-<ims/best.png, id=210, 1157.0427pt x 609.9588pt>
+ [12 <./ims/recall.png> <./ims/specificity.png>]
+<ims/best.png, id=229, 1157.0427pt x 609.9588pt>
 File: ims/best.png Graphic file (type png)
 <use ims/best.png>
-Package pdftex.def Info: ims/best.png  used on input line 578.
+Package pdftex.def Info: ims/best.png  used on input line 592.
 (pdftex.def)             Requested size: 489.10287pt x 257.83763pt.
- [12 <./ims/specificity.png> <./ims/balanced_accuracy.png>] [13 <./ims/best.png>] (./main.bbl) [14
-
-] (./main.aux)
+ [13 <./ims/balanced_accuracy.png> <./ims/best.png>] (./main.bbl) [14] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: A049CEF02A9584FEFA67998AB9BF9B70;2181.
+(rerunfilecheck)             Checksum: 6DFBE0E4B51EC3F3C1AB1F8E1CD624BA;2331.
  ) 
 Here is how much of TeX's memory you used:
- 17573 strings out of 474222
- 299487 string characters out of 5748732
+ 17724 strings out of 474222
+ 302213 string characters out of 5748732
  1940975 words of memory out of 5000000
- 39510 multiletter control sequences out of 15000+600000
- 567685 words of font info for 73 fonts, out of 8000000 for 9000
+ 39647 multiletter control sequences out of 15000+600000
+ 568498 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,10n,131p,753b,499s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
-Output written on main.pdf (14 pages, 1480231 bytes).
+ 83i,10n,131p,753b,528s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on main.pdf (14 pages, 1502892 bytes).
 PDF statistics:
- 293 PDF objects out of 1000 (max. 8388607)
- 226 compressed objects within 3 object streams
- 54 named destinations out of 1000 (max. 500000)
- 194 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 315 PDF objects out of 1000 (max. 8388607)
+ 244 compressed objects within 3 object streams
+ 57 named destinations out of 1000 (max. 500000)
+ 202 words of extra memory for PDF output out of 10000 (max. 10000000)
 

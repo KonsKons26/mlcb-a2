@@ -1,16 +1,17 @@
-\contentsline {section}{\numberline {1}abstract}{2}{section.1}%
-\contentsline {section}{\numberline {2}introduction}{2}{section.2}%
-\contentsline {subsection}{\numberline {2.1}preprocessing}{3}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}data exploration}{3}{subsection.2.2}%
-\contentsline {section}{\numberline {3}material and methods}{7}{section.3}%
-\contentsline {subsection}{\numberline {3.1}outline}{7}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}feature selection}{9}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}hyperparameter tuning}{9}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}model selection --- best model final training}{9}{subsection.3.4}%
-\contentsline {section}{\numberline {4}results and discussion}{9}{section.4}%
-\contentsline {subsection}{\numberline {4.1}features}{9}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}hyperparameters}{10}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}training results}{10}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}best model evaluation}{12}{subsection.4.4}%
-\contentsline {section}{\numberline {5}conclusion}{13}{section.5}%
-\contentsline {section}{References}{14}{section.5}%
+\contentsline {section}{\numberline {1}Abstract}{2}{section.1}%
+\contentsline {section}{\numberline {2}Introduction}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Preprocessing}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Data exploration}{3}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Material and methods}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Outline}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Feature selection}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Hyperparameter tuning}{9}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Model selection --- best model final training}{9}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Results and discussion}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Features}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Hyperparameters}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Training results}{11}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Best model evaluation}{13}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Conclusion}{14}{section.5}%
+\contentsline {section}{\numberline {6}LLM usage disclaimer}{14}{section.6}%
+\contentsline {section}{\numberline {7}References}{14}{section.7}%

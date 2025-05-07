@@ -18,6 +18,7 @@
 \usepackage{textcomp}
 \usepackage{subcaption}
 \usepackage{mathtools}
+\usepackage[nottoc,numbib]{tocbibind}
 
 % chktex-file 13
 % chktex-file 24
@@ -31,8 +32,8 @@
 
 
 \title{%
-    Machine Learning in Computational Biology \\
-    \Large Assignment 2
+    machine learning in computational biology \\
+    \Large assignment 2
     }
 \author{%
     Konstantinos Konstantinidis \\
@@ -59,7 +60,7 @@ here: \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{abstract}
+\section{Abstract}
 
 In this assignment, we are tasked with classifying a dataset consisting of 512
 samples of fine needle aspirate (FNA) measurements from breast masses. Each
@@ -140,13 +141,12 @@ classifier were:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{introduction}
+\section{Introduction}
 
-The features are extractred images from a fine needle aspirate
-(FNA)~\cite{Yu2012} of breast masses and they consist of the following 10
-\textbf{properties}, each of which is described by its mean, standard error, and
-worst value (meaning the largest mean of the three largest values), leading to
-30 features in total:
+The features are based on images from a fine needle aspirate (FNA)~\cite{Yu2012}
+of breast masses and they consist of the following 10 \textbf{properties}, each
+of which is described by its mean, standard error, and worst value (meaning the
+mean of the three largest values), leading to 30 features in total:
 \begin{center}
     \texttt{radius}
     $\bullet$ 
@@ -171,12 +171,12 @@ worst value (meaning the largest mean of the three largest values), leading to
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{preprocessing}
+\subsection{Preprocessing}
 
 The dataset needed to be preprocessed before being used. Afer inspection, it was
 found that the dataset contained some missing values, which needed to be
 imputed from the rest of the data. Also, some column names contained spaces,
-which needed to be replaced with underscores.
+which needed to be replaced with underscores (\_).
 
 I decided to use the median of each column to impute the missing values, while
 respecting the class labels, so that the imputation is done separately for each
@@ -194,12 +194,12 @@ Ugiagbe_Olu-Eddo_2011,Bhathal_Brown_Lesueur_Russell_1985}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{data exploration}
+\subsection{Data exploration}
 
 A good practice before training a model is to explore the data and see if there
 are any patterns or correlations between the features and the target variable.
 Below are some plots that show the distribution of some features, for each class
-of the target variable, and collectively (figures for all feature distrivutions
+of the target variable, and collectively (figures for all feature distributions
 can be found in the \texttt{data\_exploration.ipynb}) notebook.
 
 \begin{figure}[H]
@@ -256,12 +256,12 @@ the dataset has features that can describe the target value with high accuracy.
 Measuring and plotting the inter-feature correlation can help us find redundant
 features. In Figure\ref{fig:corr_coeffs_heatmap} we can see a few examples of
 features that seem to carry the same information; these groups of features
-appear as spots of high correlation. For example the features regarding the
-perimeter and radius show high intra-feature correlation, as well as high
+appear as spots of high correlation. For example the set of features regarding
+the perimeter and radius show high intra-feature correlation, as well as high
 correlation with the features regarding the area. Since I have ordered the
 features alphabetically, we expect correlations along the main diagonal to
-have high correlation, as they describe the are about features that describe the
-same property, and we see that in two main ``blocks''.
+have high correlation, as they describe the correlation of features that
+describe the same property, and we see that in four main ``blocks''.
 
 \begin{figure}[H]
     \centering
@@ -280,7 +280,7 @@ performance of the classifiers.
 Latsly, we can use a dimensionality reduction technique to inspect if the
 projections of the data to a subspace show any meaningful separation or if they
 form any discernible structure. To that end I used \texttt{PCA}, \texttt{t-SNE},
-and \texttt{UMAP} to map thje data points onto a lower dimension and visualize
+and \texttt{UMAP} to map the data points onto a lower dimension and visualize
 them. Below, I provide the plots for \texttt{PCA} and \texttt{UMAP}, the
 \texttt{t-SNE} results are very similar to the results from \texttt{UAMP} and
 they can be found in the \texttt{data\_exploration.ipynb} notebook, I will not
@@ -295,7 +295,7 @@ hand, in Figure~\ref{fig:umap}, we can see that the data points are separated
 more clearly, forming a single elongated cluster of points which can be
 separated almost exactly at it's center, separating the two classes (in the
 cases of the combinations of first and second dimension and first and third).
-Furthermore, even from the first dimension, the data seem to from a binomial
+Furthermore, even in the first dimension, the data seem to from a binomial
 distribution, separating the two classes.
 
 \begin{figure}[H]
@@ -317,14 +317,18 @@ distribution, separating the two classes.
 \end{figure}
 
 With all the above in mind, I decided to set up the \texttt{mRMR} function to
-select 10 features, as I have shown that 
+select 10 features, as I have shown that there are 11 features that have a
+high correlation with the target value. Also I believe that the number is not
+too high, so that the classifiers will be able to learn the underlying
+patterns in relatively few iterations, but not too low so that the classifiers
+will not be able to learn the underlying patterns.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{material and methods}
+\section{Material and methods}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{outline}
+\subsection{Outline}
 
 In essence, a nested cross-validation pipeline consists of two nested loops
 (outer and inner loops), encapsulated in a larger loop. In our case, the
@@ -359,54 +363,60 @@ test set (and as always the scaler must be fitted only on the test
 set)~\cite{Bates_2023}. I decided to perform feature selection using the whole
 training set, ignoring the fact that it might ``leak'' some information to the
 rest of the pipeline, as I believe it will be minimal and doing otherwise would
-have been ``overkill'' in tis case.
+have been ``overkill'' in this case.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{feature selection}
+\subsection{Feature selection}
 
 Feature selection was performed with the \texttt{mRMR}~\cite{mRMR}
 method which aims to minimize the redundancy between features and maximize their
-relevance to the target value.
+relevance to the target value; to that end, I used the \texttt{%
+pymrmr}\footnote{\url{https://github.com/fbrundu/pymrmr}} package.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{hyperparameter tuning}
+\subsection{Hyperparameter tuning}
 
-The hyperparameter tuning was performed inside the inner loop of the nested
+Hyperparameter tuning was performed inside the inner loop of the nested
 cross-validation. The hyperparameters were tuned using the \texttt{optimize}
-method of the \texttt{Optuna} library with a \texttt{TPE} sampler, which fits
-one Gaussian mixture model $l(x)$ to the set of parameters associated with the
-best objective values and another $g(x)$ to the remaining parameters and tries
-to maximize the ratio of the two, $\frac{l(x)}{g(x)}$. The objective function
-uses the Matthews Correlation Coefficient (MCC)~\cite{Chicco2023} as the metric
+method of the \texttt{Optuna}\footnote{%
+\url{https://optuna.org/}} library with a \texttt{TPE} sampler, which fits
+one Gaussian mixture model ($l(x)$) to the set of parameters associated with the
+best objective values and another ($g(x)$) to the remaining parameters and tries
+to maximize the ratio of the two, ($\frac{l(x)}{g(x)}$). The objective function
+uses the Matthews correlation coefficient (MCC)~\cite{Chicco2023} as the metric
 to evaluate the performance of the model.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{model selection --- best model final training}
+\subsection{Model selection --- best model final training}
 
 After the nested cross-validation is complete, the best model is selected
 manually based on the over-all statistics. The selected model is fit on the
 complete dataset (minus the holdout set) using the features and hyperparameters
-selected and tested against the holdout set. 
+selected and finally it is tested against the holdout set with 1000 rounds of
+resampling with bootstrapping to generate enough samples to calculate
+statistics.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{results and discussion}
+\section{Results and discussion}
 
 The complete process for $R=10$, $N=5$, and $K=3$, and for 1000 \texttt{Optuna}
-trials, for all classifiers, took around one hour, on a machine with running
-Ubuntu 24, with 16 GB of RAM, an AMD Ryzen 7 5800H processor, and an
-NVIDIA GeForce RTX 3050 Ti graphics card. All classifiers trained at relatively
-similar speeds, with the exception of RF and LGBM, which took significantly
-more time than the rest.
+trials, for all classifiers, took around one hour, on a machine running Ubuntu
+24, with 16 GB of RAM, an AMD Ryzen 7 5800H processor, and an NVIDIA GeForce RTX
+3050 Ti graphics card. All classifiers trained at relatively similar speeds,
+with the exception of RF and LGBM, which took significantly more time than the
+rest.
 
 The complete process can be viewd in the \texttt{classification.ipynb} notebook,
 which also contains all outputs.
 
-\subsection{features}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Features}
 
 The selected features are shown below
 (Table~\ref{tab:features}).
@@ -438,10 +448,12 @@ some of them are correlated, the correlations between them are not that high.
 
 The features selected by the pipeline are descriptors of properties that a human
 histopathologist would look for when trying to classify a mass as benign or
-malignant~\cite{Weigelt_2010}.
+malignant~\cite{Weigelt_2010}, highlighting the interpretability and biological
+relevance of the model.
 
 
-\subsection{hyperparameters}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Hyperparameters}
 
 The hyperparameters chosen by \texttt{Optuna} are provided in the Table below\
 (Table~\ref{tab:hyperparams_models}).
@@ -498,7 +510,8 @@ The hyperparameters chosen by \texttt{Optuna} are provided in the Table below\
 \end{table}
 
 
-\subsection{training results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Training results}
 
 To capture the performance of the models the following metrics were used:
 \begin{center}
@@ -519,11 +532,11 @@ To capture the performance of the models the following metrics were used:
     \texttt{ROC AUC}
 \end{center}
 
-Below I include the boxplots for the Matthews correlation coefficient,
-recall, specificity, and balanced accuracy metrics that the models achieved
-during their training (Figures~\ref{fig:mcc},~\ref{fig:recall},~\ref{%
-fig:specificity},~\ref{fig:balanced_accuracy}), the rest are not included for
-brevity but they can be found in \texttt{classification.ipynb}.
+Below I include the boxplots for the MCC, recall, specificity, and balanced
+accuracy metrics that the models achieved during their training
+(Figures~\ref{fig:mcc},~\ref{fig:recall},~\ref{fig:specificity},~\ref{%
+fig:balanced_accuracy}), the rest are not included for brevity but they can be
+found in \texttt{classification.ipynb}.
 
 From these metrics we can see that LDA scored the best in all but one area,
 recall, which was expected due to the recall/specificity trade-off, as
@@ -566,7 +579,8 @@ specificity = \frac{TN}{TN + FP}
 \end{figure}
 
 
-\subsection{best model evaluation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Best model evaluation}
 
 The best model was then tested against the holdout set, using the same metrics
 as above and 1000 rounds of resampling with bootstrapping to generate enough
@@ -581,9 +595,10 @@ fig:best_model_eval}.
 \end{figure}
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{conclusion}
+\section{Conclusion}
 
 Nested cross-validation is a robust approach for training machine learning
 models, particularly when paired with advanced feature selection and
@@ -596,9 +611,19 @@ very low incidence of false negatives. Moreover, the selected features align
 with known physiological characteristics, supporting the model's
 interpretability and biological relevance.
 
-\clearpage
-\addcontentsline{toc}{section}{References}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{LLM usage disclaimer}
+I used GitHub's Copilot running Gemini 2.5 Pro for writing some boilerplate
+code and DeepSeek-V3 for debugging one of the visualization functions. Current
+LLMs are extremely useful for generating parts of the code that are quite
+trivial and repetitive, while they can also assist with debugging when needed,
+especially in cases where the libraries used are not well documented or the
+coder is not familiar with them.
+
+
 \bibliographystyle{ieeetr}
-\bibliography{references}
+\bibliography{References}
 
 \end{document}
