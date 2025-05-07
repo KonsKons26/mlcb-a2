@@ -110,31 +110,16 @@ The \textbf{selected features} were:
     \texttt{area\_mean}
 \end{center}
 
+
 All models performed exceptionally well, with the best one being the
 \textbf{LDA} classifier. The \textbf{optimal hyperparameters} for the LDA
 classifier were:
 \begin{center}
-    \texttt{boosting\_type=dart}
+    \texttt{solver=lsqr}
     $\bullet$ 
-    \texttt{num\_leaves=32}
+    \texttt{shrinkage=auto}
     $\bullet$ 
-    \texttt{max\_depth=53}
-    $\bullet$ 
-    \texttt{learning\_rate=0.403}
-    $\bullet$ 
-    \texttt{n\_estimators=903}
-    $\bullet$ 
-    \texttt{min\_child\_sample=20}
-    $\bullet$ 
-    \texttt{reg\_alpha=0.149}
-    $\bullet$ 
-    \texttt{reg\_lambda=0.542}
-    $\bullet$ 
-    \texttt{bagging\_freq=9}
-    $\bullet$ 
-    \texttt{bagging\_fraction=0.455}
-    $\bullet$ 
-    \texttt{feature\_fraction=0.589}
+    \texttt{priors=None}
 \end{center}
 
 
@@ -188,7 +173,7 @@ The dataset was also imbalanced, with the benign class having 321 samples and
 the malignant class having 191 samples. I decided to leave the dataset as is,
 since the difference is not that big and the classifiers should be able to
 handle it. Also the ratio between the two classes seems to reflect the real
-world distribution of breast cancer cases, with the benign cases being more
+world distribution of breast tumor cases, with the benign cases being more
 common than the malignant cases~\cite{%
 Ugiagbe_Olu-Eddo_2011,Bhathal_Brown_Lesueur_Russell_1985}.
 
@@ -293,7 +278,7 @@ diffuse group, but there is no physical separation between them. A similar
 case is true for the combination of the rest of the components. On the other
 hand, in Figure~\ref{fig:umap}, we can see that the data points are separated
 more clearly, forming a single elongated cluster of points which can be
-separated almost exactly at it's center, separating the two classes (in the
+separated almost exactly at its center, separating the two classes (in the
 cases of the combinations of first and second dimension and first and third).
 Furthermore, even in the first dimension, the data seem to from a binomial
 distribution, separating the two classes.
@@ -404,14 +389,14 @@ statistics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}
 
-The complete process for $R=10$, $N=5$, and $K=3$, and for 1000 \texttt{Optuna}
+The complete process for $R=10$, $N=5$, and $K=3$, and for 100 \texttt{Optuna}
 trials, for all classifiers, took around one hour, on a machine running Ubuntu
 24, with 16 GB of RAM, an AMD Ryzen 7 5800H processor, and an NVIDIA GeForce RTX
 3050 Ti graphics card. All classifiers trained at relatively similar speeds,
 with the exception of RF and LGBM, which took significantly more time than the
 rest.
 
-The complete process can be viewd in the \texttt{classification.ipynb} notebook,
+The complete process can be viewed in the \texttt{classification.ipynb} notebook,
 which also contains all outputs.
 
 
