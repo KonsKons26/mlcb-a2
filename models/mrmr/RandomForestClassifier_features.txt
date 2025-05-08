@@ -1,3 +1,5 @@
 concave_points_worst
 perimeter_worst
 radius_worst
+concave_points_mean
+perimeter_mean

@@ -25,7 +25,6 @@
 % chktex-file 36
 % chktex-file 44
 
-
 % Customizations
 \definecolor{inputGray}{HTML}{f8f8f8}
 \definecolor{outGray}{HTML}{dfdfdf}
@@ -87,39 +86,15 @@ The classifiers used in this assignment are:
     \item LightGBM (LGBM)
 \end{itemize}
 
-The \textbf{selected features} were:
-\begin{center}
-    \texttt{concave\_points\_worst}
-    $\bullet$ 
-    \texttt{perimeter\_worst}
-    $\bullet$ 
-    \texttt{concave\_points\_mean}
-    $\bullet$ 
-    \texttt{radius\_worst}
-    $\bullet$ 
-    \texttt{perimeter\_mean}
-    $\bullet$ 
-    \texttt{area\_worst}
-    $\bullet$ 
-    \texttt{concavity\_mean}
-    $\bullet$ 
-    \texttt{radius\_mean}
-    $\bullet$ 
-    \texttt{concavity\_worst}
-    $\bullet$ 
-    \texttt{area\_mean}
-\end{center}
-
-
 All models performed exceptionally well, with the best one being the
-\textbf{LDA} classifier. The \textbf{optimal hyperparameters} for the LDA
-classifier were:
+\textbf{baseline} (no feature selection) \textbf{Logistic Regression}. The
+\textbf{optimal hyperparameters} for the LR classifier were:
 \begin{center}
-    \texttt{solver=lsqr}
+    \texttt{C = 0.067}
     $\bullet$ 
-    \texttt{shrinkage=auto}
+    \texttt{l1\_ratio = 0.019}
     $\bullet$ 
-    \texttt{priors=None}
+    \texttt{max\_iter = 9613}
 \end{center}
 
 
@@ -354,10 +329,18 @@ have been ``overkill'' in this case.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Feature selection}
 
-Feature selection was performed with the \texttt{mRMR}~\cite{mRMR}
-method which aims to minimize the redundancy between features and maximize their
-relevance to the target value; to that end, I used the \texttt{%
-pymrmr}\footnote{\url{https://github.com/fbrundu/pymrmr}} package.
+As part of the bonus questions, I also performed feature selection with two
+methods. The first was using the \texttt{mRMR}~\cite{mRMR} method which aims to
+minimize the redundancy between features and maximize their relevance to the
+target value; to that end, I used the \texttt{pymrmr}\footnote{\url{%
+https://github.com/fbrundu/pymrmr}} package.
+
+The second was more unorthodox. Since seeing the embeddings produced by
+\texttt{UMAP} and how well the classes were separated in that subspace, I
+decided to transform the dataset using \texttt{UMAP} and generate new features.
+The disadvantage here is that the results will no longer be interpretable and
+the mapper will have to also be saved and incorporated in the pipeline for
+the model to be able to classify unseen data.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -396,52 +379,46 @@ trials, for all classifiers, took around one hour, on a machine running Ubuntu
 with the exception of RF and LGBM, which took significantly more time than the
 rest.
 
-The complete process can be viewed in the \texttt{classification.ipynb} notebook,
-which also contains all outputs.
+The complete training process can be viewed in the \texttt{classification.ipynb}
+and in the \texttt{evaluation.ipynb} notebooks which containing the complete
+training process and the visualization of all results.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Features}
+\subsection{Feature Selection}
 
-The selected features are shown below
-(Table~\ref{tab:features}).
-\begin{table}[H]
+Feature selection using \texttt{mRMR} or \texttt{UMAP} did not seem to improve
+the performance of the tested classifiers. For reference we can see that the
+baseline Logistic Regression model, which was also the best performing model,
+has better metrics, with the median of all metrics being over 9.25!
+
+\begin{figure}[H]
     \centering
-    \begin{tabular}{|c|c|}
-    \hline
-    \multicolumn{2}{|c|}{\textbf{Selected Features}} \\
-    \hline
-    \texttt{concave\_points\_worst} & \texttt{concave\_points\_mean} \\
-    \hline
-    \texttt{perimeter\_worst}       & \texttt{perimeter\_mean} \\
-    \hline
-    \texttt{area\_worst}            & \texttt{area\_mean} \\
-    \hline
-    \texttt{radius\_worst}          & \texttt{radius\_mean} \\
-    \hline
-    \texttt{concavity\_worst}       & \texttt{concavity\_mean} \\
-    \hline
-    \end{tabular}
-    \caption{List of selected features}
-    \label{tab:features}
-\end{table}
+    \includegraphics[width=\textwidth]{ims/baseline_logistic.png}
+    \caption{Performance of the baseline LR model.}
+    \label{fig:baseline_logistic}
+\end{figure}
 
-These features agree with the data shown in Frigure~\ref{fig:corr_coeffs} which
-ranks them as the features with the highest correlation out of all 30 in the
-dataset and from Firugre~\ref{fig:corr_coeffs_heatmap} we can see that although
-some of them are correlated, the correlations between them are not that high.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ims/mrmr_logistic.png}
+    \caption{Performance of the baseline LR model with \texttt{mRMR}.}
+    \label{fig:mrmr_logistic}
+\end{figure}
 
-The features selected by the pipeline are descriptors of properties that a human
-histopathologist would look for when trying to classify a mass as benign or
-malignant~\cite{Weigelt_2010}, highlighting the interpretability and biological
-relevance of the model.
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ims/umap_logistic.png}
+    \caption{Performance of the baseline LR model with \texttt{UMAP}.}
+    \label{fig:umap_logistic}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Hyperparameters}
 
-The hyperparameters chosen by \texttt{Optuna} are provided in the Table below\
-(Table~\ref{tab:hyperparams_models}).
+The hyperparameters chosen by \texttt{Optuna} during baseline training (no
+feature selection) are provided in the Table below (Table~\ref{%
+tab:hyperparams_models}).
 
 \begin{table}[H]
     \centering
@@ -518,15 +495,15 @@ To capture the performance of the models the following metrics were used:
 \end{center}
 
 Below I include the boxplots for the MCC, recall, specificity, and balanced
-accuracy metrics that the models achieved during their training
-(Figures~\ref{fig:mcc},~\ref{fig:recall},~\ref{fig:specificity},~\ref{%
-fig:balanced_accuracy}), the rest are not included for brevity but they can be
-found in \texttt{classification.ipynb}.
+accuracy metrics that the models achieved during their training (without
+feature selection)
+(Figures~\ref{fig:baseline_mcc},~\ref{fig:baseline_recall},~\ref{%
+fig:baseline_specificity},~\ref{fig:baseline_balanced_accuracy}), the rest are
+not included for brevity but they can be found in \texttt{evaluation.ipynb}.
 
-From these metrics we can see that LDA scored the best in all but one area,
-recall, which was expected due to the recall/specificity trade-off, as
-recall captures the proportion of actual positives correctly identified, while
-specificity captures the proportion of actual negatives correctly identified.
+From these metrics we can see that LR scored the best in all areas and even
+achieved a median specificity of 1, without losing in recall, which is not
+expected due to the recall/specificity tradeoff.
 \[
 recall = \frac{TP}{TP + FN}
 \]
@@ -537,30 +514,30 @@ specificity = \frac{TN}{TN + FP}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{ims/mcc.png}
+    \includegraphics[width=\textwidth]{ims/baseline_mcc.png}
     \caption{Matthews correlation coefficient for all models.}
-    \label{fig:mcc}
+    \label{fig:baseline_mcc}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{ims/recall.png}
+    \includegraphics[width=\textwidth]{ims/baseline_recall.png}
     \caption{Recall for all models.}
-    \label{fig:recall}
+    \label{fig:baseline_recall}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{ims/specificity.png}
+    \includegraphics[width=\textwidth]{ims/baseline_specificity.png}
     \caption{Specificity for all models.}
-    \label{fig:specificity}
+    \label{fig:baseline_specificity}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{ims/balanced_accuracy.png}
+    \includegraphics[width=\textwidth]{ims/baseline_balanced_accuracy.png}
     \caption{Balanced accuracy for all models.}
-    \label{fig:balanced_accuracy}
+    \label{fig:baseline_balanced_accuracy}
 \end{figure}
 
 

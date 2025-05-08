@@ -1,1 +1,1 @@
-{"solver": "svd", "shrinkage": null, "priors": null}
+{"solver": "eigen", "shrinkage": null, "priors": null}

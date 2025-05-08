@@ -1,1 +1,1 @@
-{"C": 0.19324431456668215, "gamma": "auto", "coef0": 0.07237442570705954, "kernel": "sigmoid", "class_weight": null}
+{"C": 0.13658178367739332, "gamma": "auto", "coef0": 0.6354198701000878, "kernel": "sigmoid", "class_weight": "balanced"}

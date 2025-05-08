@@ -1,1 +1,1 @@
-{"C": 8919.227944119399, "l1_ratio": 0.8253357140911376, "max_iter": 9385, "class_weight": null}
+{"C": 0.29147141837429663, "l1_ratio": 0.3584884071676865, "max_iter": 2197, "class_weight": "balanced"}

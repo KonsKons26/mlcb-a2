@@ -1,1 +1,1 @@
-{"C": 0.14139291490217357, "gamma": "auto", "coef0": 0.9906130327268193, "kernel": "rbf", "class_weight": null}
+{"C": 0.11229697023020827, "gamma": "auto", "coef0": 0.47305621165959233, "kernel": "poly", "degree": 1, "class_weight": "balanced"}

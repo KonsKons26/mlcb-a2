@@ -561,12 +561,8 @@ def validate(
         os.path.join(data_dir, file_name)
     )
 
-    # Clean up the dataset so it matches what the model expects
-    # X = val_set.drop(columns=[target, "id"])
     X = val_set.drop(columns=[target])
-    for col in X.columns:
-        if " " in col:
-            X.rename(columns={col: col.replace(" ", "_")}, inplace=True)
+
     # Load the model
     model = load(
         os.path.join(models_dir, f"{model_name}.joblib")
@@ -577,9 +573,9 @@ def validate(
         os.path.join(models_dir, f"{model_name}_scaler.joblib")
     )
     if not fs_method:
-        print("No FS.")
+        pass
 
-    elif fs_method.upper == "MRMR":
+    elif fs_method.upper() == "MRMR":
         # Read the selected features
         with open(
             os.path.join(models_dir, f"{model_name}_features.txt"),

@@ -15,8 +15,8 @@
 \newlabel{fig:perimeter_worst}{{1}{3}{Distribution of the \texttt {perimeter\_worst} feature for each class (left and right) and the whole dataset (center)}{figure.caption.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Distribution of the \texttt  {concave\_point\_worst} feature for each class (left and right) and the whole dataset (center).}}{3}{figure.caption.3}\protected@file@percent }
 \newlabel{fig:area_worst}{{2}{3}{Distribution of the \texttt {concave\_point\_worst} feature for each class (left and right) and the whole dataset (center)}{figure.caption.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Distribution of the \texttt  {texture\_se} feature for each class (left and right) and the whole dataset (center).}}{4}{figure.caption.4}\protected@file@percent }
-\newlabel{fig:concave_points_se}{{3}{4}{Distribution of the \texttt {texture\_se} feature for each class (left and right) and the whole dataset (center)}{figure.caption.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Distribution of the \texttt  {texture\_se} feature for each class (left and right) and the whole dataset (center).}}{3}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:concave_points_se}{{3}{3}{Distribution of the \texttt {texture\_se} feature for each class (left and right) and the whole dataset (center)}{figure.caption.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value.}}{4}{figure.caption.5}\protected@file@percent }
 \newlabel{fig:corr_coeffs}{{4}{4}{Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value}{figure.caption.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value.}}{5}{figure.caption.6}\protected@file@percent }
@@ -36,35 +36,37 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Hyperparameter tuning}{9}{subsection.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Model selection --- best model final training}{9}{subsection.3.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Results and discussion}{9}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Features}{9}{subsection.4.1}\protected@file@percent }
-\citation{Weigelt_2010}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces List of selected features}}{10}{table.caption.10}\protected@file@percent }
-\newlabel{tab:features}{{1}{10}{List of selected features}{table.caption.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Hyperparameters}{10}{subsection.4.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Best hyperparameters for each classifier after tuning. Numerical values rounded for readability.}}{10}{table.caption.11}\protected@file@percent }
-\newlabel{tab:hyperparams_models}{{2}{10}{Best hyperparameters for each classifier after tuning. Numerical values rounded for readability}{table.caption.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Training results}{11}{subsection.4.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Matthews correlation coefficient for all models.}}{11}{figure.caption.12}\protected@file@percent }
-\newlabel{fig:mcc}{{9}{11}{Matthews correlation coefficient for all models}{figure.caption.12}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Recall for all models.}}{12}{figure.caption.13}\protected@file@percent }
-\newlabel{fig:recall}{{10}{12}{Recall for all models}{figure.caption.13}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Specificity for all models.}}{12}{figure.caption.14}\protected@file@percent }
-\newlabel{fig:specificity}{{11}{12}{Specificity for all models}{figure.caption.14}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Balanced accuracy for all models.}}{13}{figure.caption.15}\protected@file@percent }
-\newlabel{fig:balanced_accuracy}{{12}{13}{Balanced accuracy for all models}{figure.caption.15}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Best model evaluation}{13}{subsection.4.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Best model evaluation metrics.}}{13}{figure.caption.16}\protected@file@percent }
-\newlabel{fig:best_model_eval}{{13}{13}{Best model evaluation metrics}{figure.caption.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Feature Selection}{9}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Performance of the baseline LR model.}}{10}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:baseline_logistic}{{9}{10}{Performance of the baseline LR model}{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Performance of the baseline LR model with \texttt  {mRMR}.}}{10}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:mrmr_logistic}{{10}{10}{Performance of the baseline LR model with \texttt {mRMR}}{figure.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Performance of the baseline LR model with \texttt  {UMAP}.}}{11}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:umap_logistic}{{11}{11}{Performance of the baseline LR model with \texttt {UMAP}}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Hyperparameters}{11}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Best hyperparameters for each classifier after tuning. Numerical values rounded for readability.}}{12}{table.caption.13}\protected@file@percent }
+\newlabel{tab:hyperparams_models}{{1}{12}{Best hyperparameters for each classifier after tuning. Numerical values rounded for readability}{table.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Training results}{12}{subsection.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Matthews correlation coefficient for all models.}}{13}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:baseline_mcc}{{12}{13}{Matthews correlation coefficient for all models}{figure.caption.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Recall for all models.}}{13}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:baseline_recall}{{13}{13}{Recall for all models}{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Specificity for all models.}}{14}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:baseline_specificity}{{14}{14}{Specificity for all models}{figure.caption.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Balanced accuracy for all models.}}{14}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:baseline_balanced_accuracy}{{15}{14}{Balanced accuracy for all models}{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Best model evaluation}{14}{subsection.4.4}\protected@file@percent }
 \bibstyle{ieeetr}
 \bibdata{References}
 \bibcite{Yu2012}{1}
 \bibcite{Ugiagbe_Olu-Eddo_2011}{2}
 \bibcite{Bhathal_Brown_Lesueur_Russell_1985}{3}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Best model evaluation metrics.}}{15}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:best_model_eval}{{16}{15}{Best model evaluation metrics}{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{15}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}LLM usage disclaimer}{15}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}References}{15}{section.7}\protected@file@percent }
 \bibcite{Bates_2023}{4}
 \bibcite{mRMR}{5}
 \bibcite{Chicco2023}{6}
-\bibcite{Weigelt_2010}{7}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{14}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}LLM usage disclaimer}{14}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}References}{14}{section.7}\protected@file@percent }
-\gdef \@abspage@last{14}
+\gdef \@abspage@last{16}
