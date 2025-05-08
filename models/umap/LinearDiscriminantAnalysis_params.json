@@ -1,1 +1,1 @@
-{"solver": "eigen", "shrinkage": null, "priors": null}
+{"solver": "lsqr", "shrinkage": "auto", "priors": null}

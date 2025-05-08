@@ -515,30 +515,9 @@ def pipeline(
     # This is done to ensure that the holdout set is not affected by
     # the imputation of NaN values in the training set.
 
-    # split to datasets with and without NaN values
-    n = df.shape[0]
-    nan_mask = df.isna().any(axis=1)
-    df_with_nans = df[nan_mask]
-    df_without_nans = df[~nan_mask]
-
-    # get a validation (holdout) set from the dataset without NaN values
-    val_set_n = int(n * validation_set_fraction)
-    val_set = df_without_nans.sample(n=val_set_n, random_state=seed)
-    df_without_nans = df_without_nans.drop(val_set.index)
-
-    # recombine the datasets
-    df = pd.concat([df_with_nans, df_without_nans], ignore_index=True)
-
-    # rename columns with spaces in their name
-    for col in df.columns:
-        if " " in col:
-            df.rename(columns={col: col.replace(" ", "_")}, inplace=True)
-
-    # --Fill NaN values with the median of the column--
+    # --
     X = df.drop(columns=[target])
     y = df[target]
-    y = y.replace({"M": 1, "B": 0})  # Convert to binary classification
-    X = fill_nans_with_median(X, y, True)
 
     # --Run the nCV for each classifier--
     for clf in classifiers:
@@ -563,8 +542,6 @@ def pipeline(
         ncv.run()
 
     print("Pipeline completed.")
-    # Return the validation set ------------------------------------------------
-    return val_set
 
 
 def validate(
@@ -586,7 +563,7 @@ def validate(
 
     # Clean up the dataset so it matches what the model expects
     # X = val_set.drop(columns=[target, "id"])
-    X = val_set
+    X = val_set.drop(columns=[target])
     for col in X.columns:
         if " " in col:
             X.rename(columns={col: col.replace(" ", "_")}, inplace=True)
@@ -630,7 +607,6 @@ def validate(
 
 
     y = val_set[target]
-    y = y.replace({"M": 1, "B": 0})
 
     # Scale the data
     X_scaled = pd.DataFrame(scaler.transform(X), columns=X.columns, index=X.index)

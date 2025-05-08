@@ -1,1 +1,1 @@
-{"n_estimators": 76, "criterion": "entropy", "min_samples_split": 6}
+{"n_estimators": 99, "criterion": "gini", "min_samples_split": 3}
