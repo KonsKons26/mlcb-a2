@@ -585,7 +585,8 @@ def validate(
     )
 
     # Clean up the dataset so it matches what the model expects
-    X = val_set.drop(columns=[target, "id"])
+    # X = val_set.drop(columns=[target, "id"])
+    X = val_set
     for col in X.columns:
         if " " in col:
             X.rename(columns={col: col.replace(" ", "_")}, inplace=True)

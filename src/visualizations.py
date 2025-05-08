@@ -343,6 +343,7 @@ def pairplot(
 def visualize_training_summary_boxplots(
         names: list[str],
         dfs: list[pd.DataFrame],
+        fs: str,
         boxplot_kws: dict
     ):
     """
@@ -354,6 +355,8 @@ def visualize_training_summary_boxplots(
         The names of the classifiers.
     dfs : list of pandas.DataFrame
         The dataframes containing the training summary for each classifier.
+    fs : str
+        The feature selection method used for the classifiers.
     boxplot_kws : dict
         The keyword arguments for the boxplot function. Must contain the
         following keys:
@@ -399,8 +402,7 @@ def visualize_training_summary_boxplots(
             wis.set(linewidth=boxplot_kws["wiswidth"])
         for cap in bxplt["caps"]:
             cap.set(linewidth=boxplot_kws["wiswidth"])
-        plt.yticks([0.75, 0.8, 0.85, 0.9, 0.95, 1])
-        plt.title(clf, fontdict={"fontsize": 20})
+        plt.title(f"{fs} {clf}", fontdict={"fontsize": 20})
         plt.show()
 
     # --- Create boxplots of the training summary, by metric -------------------
@@ -420,7 +422,7 @@ def visualize_training_summary_boxplots(
             wis.set(linewidth=boxplot_kws["wiswidth"])
         for cap in bxplt["caps"]:
             cap.set(linewidth=boxplot_kws["wiswidth"])
-        plt.title(metric, fontdict={"fontsize": 20})
+        plt.title(f"{fs} {metric}", fontdict={"fontsize": 20})
         plt.show()
 
 
