@@ -72,8 +72,10 @@ bootstrapping.
 The classifiers will be tuned using \texttt{Optuna}, a hyperparameter
 optimization framework, while the features will be selected using \texttt{mRMR},
 a feature selection method which minimizes the redundancy between features and
-maximizes their relevance to the target class. The classifiers will be evaluated
-using several metrics from the \texttt{scikit-learn} library.
+maximizes their relevance to the target class, \texttt{UMAP}, a dimensionality
+reduction technique, or they will all be used (here termed baseline). The
+classifiers will be evaluated using several metrics from the \texttt{%
+scikit-learn} library.
 
 The classifiers used in this assignment are:
 
@@ -90,11 +92,13 @@ All models performed exceptionally well, with the best one being the
 \textbf{baseline} (no feature selection) \textbf{Logistic Regression}. The
 \textbf{optimal hyperparameters} for the LR classifier were:
 \begin{center}
-    \texttt{C = 0.067}
-    $\bullet$ 
+    $\bullet$
+    \texttt{C = 0.066}
+    $\bullet$
     \texttt{l1\_ratio = 0.019}
-    $\bullet$ 
+    $\bullet$
     \texttt{max\_iter = 9613}
+    $\bullet$
 \end{center}
 
 
@@ -108,25 +112,27 @@ of breast masses and they consist of the following 10 \textbf{properties}, each
 of which is described by its mean, standard error, and worst value (meaning the
 mean of the three largest values), leading to 30 features in total:
 \begin{center}
+    $\bullet$
     \texttt{radius}
-    $\bullet$ 
+    $\bullet$
     \texttt{texture}
-    $\bullet$ 
+    $\bullet$
     \texttt{perimeter}
-    $\bullet$ 
+    $\bullet$
     \texttt{area}
-    $\bullet$ 
+    $\bullet$
     \texttt{smoothness}
-    $\bullet$ 
+    $\bullet$
     \texttt{compactness}
-    $\bullet$ 
+    $\bullet$
     \texttt{concavity}
-    $\bullet$ 
+    $\bullet$
     \texttt{concave\_points}
-    $\bullet$ 
+    $\bullet$
     \texttt{symmetry}
-    $\bullet$ 
-    \texttt{fractal\_dimension}    
+    $\bullet$
+    \texttt{fractal\_dimension}
+    $\bullet$    
 \end{center}
 
 
@@ -164,14 +170,6 @@ can be found in the \texttt{data\_exploration.ipynb}) notebook.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{ims/perimeter_worst.png}
-    \caption{Distribution of the \texttt{perimeter\_worst} feature for each
-    class (left and right) and the whole dataset (center).}
-    \label{fig:perimeter_worst}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
     \includegraphics[width=\textwidth]{ims/concave_points_worst.png}
     \caption{Distribution of the \texttt{concave\_point\_worst} feature for each
     class (left and right) and the whole dataset (center).}
@@ -186,18 +184,31 @@ can be found in the \texttt{data\_exploration.ipynb}) notebook.
     \label{fig:concave_points_se}
 \end{figure}
 
-In Figure~\ref{fig:perimeter_worst} and Figure~\ref{fig:area_worst}, we can see
-that the two classes are well separated, with the malignant class having higher
-values for both features. This is not the case in Figure~\ref{%
-fig:concave_points_se}; the \texttt{concave\_points\_se} feature has very
-similar distributions for both classes.
+In Figure~\ref{fig:area_worst}, we can see that the two classes are well
+separated, with the malignant class having higher values for the feature.
+This is not the case in Figure~\ref{fig:concave_points_se}; the \texttt{%
+concave\_points\_se} feature has very similar distributions for both classes.
 
 Next, we can inspect how correlated the features are with the target values by
-calculating and plotting the Spearman's $\rho$, Kendall's $\tau$ and the Point
-Biserial correlation coefficients. Spearman's $\rho$ and Kendalls's $\tau$ are
-useful for measuring non-linear, monotonically increasing relations and the
-Point Biserial correlation is specifically designed for binary classification
-problems.
+calculating and plotting the Point Biserial (Equation~\ref{eq:pb}), Spearman's
+$\rho$ (Equation~\ref{eq:spearman}), and Kendall's $\tau$ (Equation~\ref{%
+eq:kendall}) coefficients. The Point Biserial correlation is specifically
+designed for binary classification problems and Spearman's $\rho$ and Kendalls's
+$\tau$ are useful for measuring non-linear, monotonically increasing relations.
+
+\begin{equation}
+    r_{pb} = \frac{M_1 - M_0}{s_{n-1}} \sqrt{\frac{n_1 n_0}{n(n-1)}}
+    \label{eq:pb}
+\end{equation}
+\begin{equation}
+    \rho = \frac{cov[R[X], R[Y]]}{\sigma_{R[X]} \sigma_{R[Y]}}
+    \label{eq:spearman}
+\end{equation}
+\begin{equation}
+    \tau = \frac{2}{n(n-1)} \sum_{i<j} sgn(x_i - x_j) sgn(y_i - y_j)
+    \label{eq:kendall}
+\end{equation}
+
 
 In Figure~\ref{fig:corr_coeffs} we can see the absolute values of the
 correlation coefficients mentioned above. Eleven values show an absolute
@@ -214,13 +225,13 @@ the dataset has features that can describe the target value with high accuracy.
 \end{figure}
 
 Measuring and plotting the inter-feature correlation can help us find redundant
-features. In Figure\ref{fig:corr_coeffs_heatmap} we can see a few examples of
+features. In Figure~\ref{fig:corr_coeffs_heatmap} we can see a few examples of
 features that seem to carry the same information; these groups of features
 appear as spots of high correlation. For example the set of features regarding
 the perimeter and radius show high intra-feature correlation, as well as high
 correlation with the features regarding the area. Since I have ordered the
-features alphabetically, we expect correlations along the main diagonal to
-have high correlation, as they describe the correlation of features that
+features alphabetically, I expect correlations along the main diagonal to
+have higher values, as they describe the correlation of features that
 describe the same property, and we see that in four main ``blocks''.
 
 \begin{figure}[H]
@@ -237,7 +248,7 @@ redundant. I expect that the classifiers will perform well, but I will need to
 use feature selection to remove the redundant features and improve the
 performance of the classifiers.
 
-Latsly, we can use a dimensionality reduction technique to inspect if the
+Latsly, we can use dimensionality reduction techniques to inspect if the
 projections of the data to a subspace show any meaningful separation or if they
 form any discernible structure. To that end I used \texttt{PCA}, \texttt{t-SNE},
 and \texttt{UMAP} to map the data points onto a lower dimension and visualize
@@ -255,7 +266,7 @@ hand, in Figure~\ref{fig:umap}, we can see that the data points are separated
 more clearly, forming a single elongated cluster of points which can be
 separated almost exactly at its center, separating the two classes (in the
 cases of the combinations of first and second dimension and first and third).
-Furthermore, even in the first dimension, the data seem to from a binomial
+Furthermore, even in the first dimension, the data seem to from a bimodal
 distribution, separating the two classes.
 
 \begin{figure}[H]
@@ -277,11 +288,12 @@ distribution, separating the two classes.
 \end{figure}
 
 With all the above in mind, I decided to set up the \texttt{mRMR} function to
-select 10 features, as I have shown that there are 11 features that have a
-high correlation with the target value. Also I believe that the number is not
-too high, so that the classifiers will be able to learn the underlying
-patterns in relatively few iterations, but not too low so that the classifiers
-will not be able to learn the underlying patterns.
+select 5 features, as I have shown that there are 11 features that have a
+high correlation with the target value but also a lot of them are redundant.
+The same holds for the \texttt{UMAP} function, which I also set to 5 dimensions.
+Also I believe that the number is not too high, so that the classifiers will be
+able to converge in relatively few iterations, but not too low so that the
+classifiers will not be able to learn the underlying patterns.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -295,12 +307,12 @@ In essence, a nested cross-validation pipeline consists of two nested loops
 encapsulating loops (or rounds) will be set to $R=10$, the outer loops will be
 set to $N=5$, and the inner loops to $K=3$.
 
-The job of the outer fold is to split the data set and perform cross-validation,
-with the inner folds performing hyperparameter tuning with yet another
-cross-validation. The job of the enclosing rounds is to change the random number
-generator seeds, to get $R$ different results, leading to better generalization
-ability of the model. A schematic of nested cross-validation is provided below
-(Figure\ref{fig:ncv_scheme}).
+The job of the outer folds is to split the data set and perform
+cross-validation, with the inner folds performing hyperparameter tuning with
+yet another cross-validation. The job of the enclosing rounds is to change the
+random number generator seeds, to get $R$ different results, leading to better
+generalization ability of the model. A schematic of nested cross-validation is
+provided below (Figure\ref{fig:ncv_scheme}).
 
 \begin{figure}[H]
     \centering
@@ -327,6 +339,22 @@ have been ``overkill'' in this case.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Preprocessing}
+The preprocessing steps are performed in the \texttt{preprocess.ipynb} notebook.
+The final datasets were saved in the \texttt{data} folder, under the names
+\texttt{clean.csv} and \texttt{holdout.csv} for the training and holdout sets
+respectively.
+
+First the column \texttt{id} was removed, as it contained metadata that was not
+needed for the training. The column names were also changed to remove the spaces
+and replace them with underscores (\_). Then, the holdout set was created by
+taking 10\% of the dataset, while ensuring that the samples had no missing
+values to ensure that the holdout set was not influenced by the imputation
+process. The rest of the dataset had the missing values imputed using the median
+of each column, while respecting the class labels.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Feature selection}
 
 As part of the bonus questions, I also performed feature selection with two
@@ -340,7 +368,9 @@ The second was more unorthodox. Since seeing the embeddings produced by
 decided to transform the dataset using \texttt{UMAP} and generate new features.
 The disadvantage here is that the results will no longer be interpretable and
 the mapper will have to also be saved and incorporated in the pipeline for
-the model to be able to classify unseen data.
+the model to be able to classify unseen data. For \texttt{UMAP} I used the
+\texttt{umap-learn}\footnote{\url{https://umap-learn.readthedocs.io/en/latest/}}
+package.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -372,12 +402,11 @@ statistics.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}
 
-The complete process for $R=10$, $N=5$, and $K=3$, and for 100 \texttt{Optuna}
+The complete process for $R=10$, $N=5$, and $K=3$, and for 50 \texttt{Optuna}
 trials, for all classifiers, took around one hour, on a machine running Ubuntu
-24, with 16 GB of RAM, an AMD Ryzen 7 5800H processor, and an NVIDIA GeForce RTX
-3050 Ti graphics card. All classifiers trained at relatively similar speeds,
-with the exception of RF and LGBM, which took significantly more time than the
-rest.
+24, with 16 GB of RAM, and an AMD Ryzen 7 5800H processor. All classifiers
+trained at relatively similar speeds, with the exception of RF and LGBM, which
+took significantly more time than the rest.
 
 The complete training process can be viewed in the \texttt{classification.ipynb}
 and in the \texttt{evaluation.ipynb} notebooks which containing the complete
@@ -390,7 +419,8 @@ training process and the visualization of all results.
 Feature selection using \texttt{mRMR} or \texttt{UMAP} did not seem to improve
 the performance of the tested classifiers. For reference we can see that the
 baseline Logistic Regression model, which was also the best performing model,
-has better metrics, with the median of all metrics being over 9.25!
+has better metrics, with the median of all metrics being over 0.925, whereas the
+\texttt{mRMR} and \texttt{UMAP} models have a medians of around 0.9 and 0.85.
 
 \begin{figure}[H]
     \centering
@@ -427,47 +457,44 @@ tab:hyperparams_models}).
     \textbf{Model} & \textbf{Parameter} & \textbf{Value} \\
     \hline
     \multirow{4}{*}{LogisticRegression}
-      & \texttt{C} & 43.7051 \\
-      & \texttt{l1\_ratio} & 0.0536 \\
-      & \texttt{max\_iter} & 1758 \\
-      & \texttt{class\_weight} & None \\
+      & \texttt{C} & 0.066 \\
+      & \texttt{l1\_ratio} & 0.019 \\
+      & \texttt{max\_iter} & 9613 \\
     \hline
     \multirow{1}{*}{GaussianNB}
-      & \texttt{var\_smoothing} & $1.94 \times 10^{-10}$ \\
+      & \texttt{var\_smoothing} & $9.22 \times 10^{-6}$ \\
     \hline
     \multirow{3}{*}{LinearDiscriminantAnalysis}
       & \texttt{solver} & lsqr \\
       & \texttt{shrinkage} & auto \\
-      & \texttt{priors} & None \\
     \hline
     \multirow{5}{*}{SVC}
-      & \texttt{C} & 0.8969 \\
+      & \texttt{C} & 0.999 \\
       & \texttt{gamma} & auto \\
-      & \texttt{coef0} & 0.0822 \\
-      & \texttt{kernel} & linear \\
-      & \texttt{class\_weight} & None \\
+      & \texttt{coef0} & 0.990 \\
+      & \texttt{kernel} & sigmoid \\
     \hline
     \multirow{3}{*}{RandomForestClassifier}
-      & \texttt{n\_estimators} & 32 \\
-      & \texttt{criterion} & gini \\
-      & \texttt{min\_samples\_split} & 12 \\
+      & \texttt{n\_estimators} & 53 \\
+      & \texttt{criterion} & entropy \\
+      & \texttt{min\_samples\_split} & 2 \\
     \hline
     \multirow{10}{*}{LGBMClassifier}
-      & \texttt{boosting\_type} & dart \\
-      & \texttt{num\_leaves} & 32 \\
-      & \texttt{max\_depth} & 53 \\
-      & \texttt{learning\_rate} & 0.4030 \\
-      & \texttt{n\_estimators} & 903 \\
-      & \texttt{min\_child\_samples} & 20 \\
-      & \texttt{reg\_alpha} & 0.1486 \\
-      & \texttt{reg\_lambda} & 0.5418 \\
-      & \texttt{bagging\_freq} & 9 \\
-      & \texttt{bagging\_fraction} & 0.4555 \\
-      & \texttt{feature\_fraction} & 0.5883 \\
+      & \texttt{boosting\_type} & gbdt \\
+      & \texttt{num\_leaves} & 76 \\
+      & \texttt{max\_depth} & 26 \\
+      & \texttt{learning\_rate} & 0.051 \\
+      & \texttt{n\_estimators} & 663 \\
+      & \texttt{min\_child\_samples} & 5 \\
+      & \texttt{reg\_alpha} & 0.759 \\
+      & \texttt{reg\_lambda} & 0.202 \\
+      & \texttt{bagging\_freq} & 7 \\
+      & \texttt{bagging\_fraction} & 0.679 \\
+      & \texttt{feature\_fraction} & 0.791 \\
     \hline
     \end{tabular}
-    \caption{Best hyperparameters for each classifier after tuning. Numerical
-    values rounded for readability.}
+    \caption{Best hyperparameters for each classifier after tuning, with no
+    feature selection. Numerical values rounded for readability.}
     \label{tab:hyperparams_models}
 \end{table}
 
@@ -477,6 +504,7 @@ tab:hyperparams_models}).
 
 To capture the performance of the models the following metrics were used:
 \begin{center}
+    $\bullet$
     \texttt{balanced accuracy}
     $\bullet$
     \texttt{accuracy}
@@ -492,6 +520,7 @@ To capture the performance of the models the following metrics were used:
     \texttt{F1}
     $\bullet$
     \texttt{ROC AUC}
+    $\bullet$
 \end{center}
 
 Below I include the boxplots for the MCC, recall, specificity, and balanced
@@ -502,15 +531,16 @@ fig:baseline_specificity},~\ref{fig:baseline_balanced_accuracy}), the rest are
 not included for brevity but they can be found in \texttt{evaluation.ipynb}.
 
 From these metrics we can see that LR scored the best in all areas and even
-achieved a median specificity of 1, without losing in recall, which is not
-expected due to the recall/specificity tradeoff.
-\[
-recall = \frac{TP}{TP + FN}
-\]
-\[
-specificity = \frac{TN}{TN + FP}
-\]
-
+achieved a median specificity and recall of over 0.95, which is not expected due
+to the recall/specificity tradeoff (Equation~\ref{eq:rs_tradeoff}), indicating
+that the model has extremely strong predictive abilities.
+\begin{equation}
+    \begin{aligned}
+        recall &= \frac{TP}{TP + FN} \\
+        specificity &= \frac{TN}{TN + FP}
+    \end{aligned}
+    \label{eq:rs_tradeoff}
+\end{equation}
 
 \begin{figure}[H]
     \centering
@@ -565,13 +595,18 @@ fig:best_model_eval}.
 Nested cross-validation is a robust approach for training machine learning
 models, particularly when paired with advanced feature selection and
 hyperparameter optimization techniques such as \texttt{mRMR} and
-\texttt{Optuna}. A Linear Discriminant Analysis model achieved excellent
-performance on unseen data, with precision and specificity of 1.0, accuracy, F1
-score, and ROC AUC exceeding 0.9, a Matthews correlation coefficient of 0.9, and
-recall above 0.8. These results suggest strong generalization capabilities and a
-very low incidence of false negatives. Moreover, the selected features align
-with known physiological characteristics, supporting the model's
-interpretability and biological relevance.
+\texttt{Optuna}, however, in this case, they did not seem to improve the
+performance of the classifiers. A Logistic Regression model achieved excellent
+performance on unseen data, with median recall and specificity exceeding 0.8,
+median balanced accuracy over 0.9 and a Matthews correlation coefficient equal
+to 0.8. These results suggest strong generalization capabilities.
+
+A possible improvement to the current pipeline would be to use a more advanced
+feature selection methods, such as Conditional Mutual Information (CMI)
+feature selection~\cite{sym11070858} or Boruta~\cite{JSSv036i11}, because
+based on the data exploration, I would expect that the dataset has a lot of
+redundant features. Another possible improvement would be to optimize the
+hyperparameters of the classifiers using a larger search space.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

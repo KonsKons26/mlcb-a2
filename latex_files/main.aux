@@ -10,63 +10,70 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2}Introduction}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Preprocessing}{2}{subsection.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Data exploration}{3}{subsection.2.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distribution of the \texttt  {perimeter\_worst} feature for each class (left and right) and the whole dataset (center).}}{3}{figure.caption.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distribution of the \texttt  {concave\_point\_worst} feature for each class (left and right) and the whole dataset (center).}}{3}{figure.caption.2}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:perimeter_worst}{{1}{3}{Distribution of the \texttt {perimeter\_worst} feature for each class (left and right) and the whole dataset (center)}{figure.caption.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Distribution of the \texttt  {concave\_point\_worst} feature for each class (left and right) and the whole dataset (center).}}{3}{figure.caption.3}\protected@file@percent }
-\newlabel{fig:area_worst}{{2}{3}{Distribution of the \texttt {concave\_point\_worst} feature for each class (left and right) and the whole dataset (center)}{figure.caption.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Distribution of the \texttt  {texture\_se} feature for each class (left and right) and the whole dataset (center).}}{3}{figure.caption.4}\protected@file@percent }
-\newlabel{fig:concave_points_se}{{3}{3}{Distribution of the \texttt {texture\_se} feature for each class (left and right) and the whole dataset (center)}{figure.caption.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value.}}{4}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:corr_coeffs}{{4}{4}{Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value}{figure.caption.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value.}}{5}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:corr_coeffs_heatmap}{{5}{5}{Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value}{figure.caption.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Pairplot of the first 5 prinicpal components after dimensionality reduction with \texttt  {PCA}. The scatter plots are colored by the target's label (blue for benign and red for malignant).}}{6}{figure.caption.7}\protected@file@percent }
-\newlabel{fig:pca}{{6}{6}{Pairplot of the first 5 prinicpal components after dimensionality reduction with \texttt {PCA}. The scatter plots are colored by the target's label (blue for benign and red for malignant)}{figure.caption.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Pairplot of the first 5 embeddings / dimensions after dimensionality reduction with \texttt  {UMAP}. The scatter plots are colored by the target's label (blue for benign and red for malignant).}}{7}{figure.caption.8}\protected@file@percent }
-\newlabel{fig:umap}{{7}{7}{Pairplot of the first 5 embeddings / dimensions after dimensionality reduction with \texttt {UMAP}. The scatter plots are colored by the target's label (blue for benign and red for malignant)}{figure.caption.8}{}}
+\newlabel{fig:area_worst}{{1}{3}{Distribution of the \texttt {concave\_point\_worst} feature for each class (left and right) and the whole dataset (center)}{figure.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Distribution of the \texttt  {texture\_se} feature for each class (left and right) and the whole dataset (center).}}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:concave_points_se}{{2}{3}{Distribution of the \texttt {texture\_se} feature for each class (left and right) and the whole dataset (center)}{figure.caption.3}{}}
+\newlabel{eq:pb}{{1}{4}{Data exploration}{equation.2.1}{}}
+\newlabel{eq:spearman}{{2}{4}{Data exploration}{equation.2.2}{}}
+\newlabel{eq:kendall}{{3}{4}{Data exploration}{equation.2.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value.}}{4}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:corr_coeffs}{{3}{4}{Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value}{figure.caption.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value.}}{5}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:corr_coeffs_heatmap}{{4}{5}{Distribution of the Spearman's $\rho $ (red), Kendall's $\tau $ (green), and Point Biserial (blue) correlation coefficients of all features with the target value}{figure.caption.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pairplot of the first 5 prinicpal components after dimensionality reduction with \texttt  {PCA}. The scatter plots are colored by the target's label (blue for benign and red for malignant).}}{6}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:pca}{{5}{6}{Pairplot of the first 5 prinicpal components after dimensionality reduction with \texttt {PCA}. The scatter plots are colored by the target's label (blue for benign and red for malignant)}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Pairplot of the first 5 embeddings / dimensions after dimensionality reduction with \texttt  {UMAP}. The scatter plots are colored by the target's label (blue for benign and red for malignant).}}{7}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:umap}{{6}{7}{Pairplot of the first 5 embeddings / dimensions after dimensionality reduction with \texttt {UMAP}. The scatter plots are colored by the target's label (blue for benign and red for malignant)}{figure.caption.7}{}}
 \citation{Bates_2023}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Material and methods}{8}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Outline}{8}{subsection.3.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Nested cross-validation scheme. A holdout set is first taken from the dataset, here set to $10\%$. Then, $R$ times, the model is trained using cross-validation ($N$ splits), with an inner loop of hyperparameter tuning, which is also done using cross-validation ($K$ splits). All training results are aggregated and the best set of hyperparameters is selected. After all models are trained, the best one can be tested against the unseen data (holdout set); here metric statistics are calculated using resampling with bootstrapping.}}{8}{figure.caption.9}\protected@file@percent }
-\newlabel{fig:ncv_scheme}{{8}{8}{Nested cross-validation scheme. A holdout set is first taken from the dataset, here set to $10\%$. Then, $R$ times, the model is trained using cross-validation ($N$ splits), with an inner loop of hyperparameter tuning, which is also done using cross-validation ($K$ splits). All training results are aggregated and the best set of hyperparameters is selected. After all models are trained, the best one can be tested against the unseen data (holdout set); here metric statistics are calculated using resampling with bootstrapping}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Nested cross-validation scheme. A holdout set is first taken from the dataset, here set to $10\%$. Then, $R$ times, the model is trained using cross-validation ($N$ splits), with an inner loop of hyperparameter tuning, which is also done using cross-validation ($K$ splits). All training results are aggregated and the best set of hyperparameters is selected. After all models are trained, the best one can be tested against the unseen data (holdout set); here metric statistics are calculated using resampling with bootstrapping.}}{8}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:ncv_scheme}{{7}{8}{Nested cross-validation scheme. A holdout set is first taken from the dataset, here set to $10\%$. Then, $R$ times, the model is trained using cross-validation ($N$ splits), with an inner loop of hyperparameter tuning, which is also done using cross-validation ($K$ splits). All training results are aggregated and the best set of hyperparameters is selected. After all models are trained, the best one can be tested against the unseen data (holdout set); here metric statistics are calculated using resampling with bootstrapping}{figure.caption.8}{}}
 \citation{mRMR}
 \citation{Chicco2023}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Feature selection}{9}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Hyperparameter tuning}{9}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Model selection --- best model final training}{9}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results and discussion}{9}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Feature Selection}{9}{subsection.4.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Performance of the baseline LR model.}}{10}{figure.caption.10}\protected@file@percent }
-\newlabel{fig:baseline_logistic}{{9}{10}{Performance of the baseline LR model}{figure.caption.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Performance of the baseline LR model with \texttt  {mRMR}.}}{10}{figure.caption.11}\protected@file@percent }
-\newlabel{fig:mrmr_logistic}{{10}{10}{Performance of the baseline LR model with \texttt {mRMR}}{figure.caption.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Performance of the baseline LR model with \texttt  {UMAP}.}}{11}{figure.caption.12}\protected@file@percent }
-\newlabel{fig:umap_logistic}{{11}{11}{Performance of the baseline LR model with \texttt {UMAP}}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Preprocessing}{9}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Feature selection}{9}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Hyperparameter tuning}{9}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Model selection --- best model final training}{9}{subsection.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results and discussion}{10}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Feature Selection}{10}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Performance of the baseline LR model.}}{10}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:baseline_logistic}{{8}{10}{Performance of the baseline LR model}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Performance of the baseline LR model with \texttt  {mRMR}.}}{11}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:mrmr_logistic}{{9}{11}{Performance of the baseline LR model with \texttt {mRMR}}{figure.caption.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Performance of the baseline LR model with \texttt  {UMAP}.}}{11}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:umap_logistic}{{10}{11}{Performance of the baseline LR model with \texttt {UMAP}}{figure.caption.11}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Hyperparameters}{11}{subsection.4.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Best hyperparameters for each classifier after tuning. Numerical values rounded for readability.}}{12}{table.caption.13}\protected@file@percent }
-\newlabel{tab:hyperparams_models}{{1}{12}{Best hyperparameters for each classifier after tuning. Numerical values rounded for readability}{table.caption.13}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Best hyperparameters for each classifier after tuning, with no feature selection. Numerical values rounded for readability.}}{12}{table.caption.12}\protected@file@percent }
+\newlabel{tab:hyperparams_models}{{1}{12}{Best hyperparameters for each classifier after tuning, with no feature selection. Numerical values rounded for readability}{table.caption.12}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Training results}{12}{subsection.4.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Matthews correlation coefficient for all models.}}{13}{figure.caption.14}\protected@file@percent }
-\newlabel{fig:baseline_mcc}{{12}{13}{Matthews correlation coefficient for all models}{figure.caption.14}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Recall for all models.}}{13}{figure.caption.15}\protected@file@percent }
-\newlabel{fig:baseline_recall}{{13}{13}{Recall for all models}{figure.caption.15}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Specificity for all models.}}{14}{figure.caption.16}\protected@file@percent }
-\newlabel{fig:baseline_specificity}{{14}{14}{Specificity for all models}{figure.caption.16}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Balanced accuracy for all models.}}{14}{figure.caption.17}\protected@file@percent }
-\newlabel{fig:baseline_balanced_accuracy}{{15}{14}{Balanced accuracy for all models}{figure.caption.17}{}}
+\newlabel{eq:rs_tradeoff}{{4}{12}{Training results}{equation.4.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Matthews correlation coefficient for all models.}}{13}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:baseline_mcc}{{11}{13}{Matthews correlation coefficient for all models}{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Recall for all models.}}{13}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:baseline_recall}{{12}{13}{Recall for all models}{figure.caption.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Specificity for all models.}}{14}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:baseline_specificity}{{13}{14}{Specificity for all models}{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Balanced accuracy for all models.}}{14}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:baseline_balanced_accuracy}{{14}{14}{Balanced accuracy for all models}{figure.caption.16}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Best model evaluation}{14}{subsection.4.4}\protected@file@percent }
+\citation{sym11070858}
+\citation{JSSv036i11}
 \bibstyle{ieeetr}
 \bibdata{References}
 \bibcite{Yu2012}{1}
 \bibcite{Ugiagbe_Olu-Eddo_2011}{2}
 \bibcite{Bhathal_Brown_Lesueur_Russell_1985}{3}
-\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Best model evaluation metrics.}}{15}{figure.caption.18}\protected@file@percent }
-\newlabel{fig:best_model_eval}{{16}{15}{Best model evaluation metrics}{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Best model evaluation metrics.}}{15}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:best_model_eval}{{15}{15}{Best model evaluation metrics}{figure.caption.17}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{15}{section.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}LLM usage disclaimer}{15}{section.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {7}References}{15}{section.7}\protected@file@percent }
 \bibcite{Bates_2023}{4}
 \bibcite{mRMR}{5}
 \bibcite{Chicco2023}{6}
+\bibcite{sym11070858}{7}
+\bibcite{JSSv036i11}{8}
 \gdef \@abspage@last{16}

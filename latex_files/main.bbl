@@ -18,4 +18,10 @@ C.~DING and H.~PENG, ``Minimum redundancy feature selection from microarray gene
 \bibitem{Chicco2023}
 D.~Chicco and G.~Jurman, ``The matthews correlation coefficient (mcc) should replace the roc auc as the standard metric for assessing binary classification,'' {\em BioData Mining}, vol.~16, no.~1, p.~4, 2023.
 
+\bibitem{sym11070858}
+J.~Liang, L.~Hou, Z.~Luan, and W.~Huang, ``Feature selection with conditional mutual information considering feature interaction,'' {\em Symmetry}, vol.~11, no.~7, 2019.
+
+\bibitem{JSSv036i11}
+M.~B. Kursa and W.~R. Rudnicki, ``Feature selection with the boruta package,'' {\em Journal of Statistical Software}, vol.~36, no.~11, pp.~1--13, 2010.
+
 \end{thebibliography}
